@@ -1,0 +1,1328 @@
+#+STARTUP: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [beamer, aspectratio=1610]
+# +LaTeX_HEADER: \hypersetup{hyperindex=true,colorlinks=true,linkcolor=blue}
+# ------------------------------------------------------------------------------------------ #
+#       Check the following options/headers every time you start a new slides!
+#                This is the teaching org template for ITLR-DDSim!
+# ------------------------------------------------------------------------------------------ #
+
+# ----------Title----------- #
+# [title] defines the title shown on the left panel.
+# {title} defines the actual title in the title page. 
+#+BEAMER_HEADER: \title[Turbulent Flow Simulations with Physical and Data-Driven Methods]{Turbulent Flow Simulations with Physical and Data-Driven Methods}
+
+# ----------Author---------- #
+P#+BEAMER_HEADER: \author[ITLR-DDSim]{Prof. Dr. Heng Xiao}
+# -----------------------------------------------------------------------------------------
+
+# -----------Date----------- #
+#+BEAMER_HEADER: \date{Summer Semester, 2025}
+
+# -----Levels of header----- #
+#+OPTIONS: H:3 toc:nil
+
+#+LATEX_HEADER:\graphicspath{{./figs/chapter-0-introduction}{./figs/chapter-1-turbulence}{./figs/chapter-2-rans}{./figs/chapter-3-turbulence-modeling}}
+
+#+LATEX_HEADER: \AtBeginDocument{%
+#+LATEX_HEADER:   \setlength{\abovedisplayskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\belowdisplayskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\abovedisplayshortskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\belowdisplayshortskip}{6pt}%
+#+LATEX_HEADER: }
+
+
+# +BEAMER_HEADER: \AtBeginSection[]{\begin{frame}[noframenumbering]{Outline} \tableofcontents[currentsection]  \end{frame}}
+
+# +BEAMER_HEADER: \AtBeginSubsection[]{\begin{frame}[noframenumbering]{Outline} \tableofcontents[currentsection, currentsubsection] \end{frame}}
+
+
+#+LATEX_HEADER: \renewcommand{\UrlFont}{\color{cyan}} % Set URL font color to cyan
+
+
+* Configuration                                                      :ignore:
+:PROPERTIES:
+:VISIBILITY: folded
+:END:
+** Loaded Packages                                                  :ignore:
+# The beamer use some certain packages by default.
+# You can check the .tex file to see what packages have been used.
+# The following packages are recommended loaded.
+
+#+LATEX_HEADER: \usepackage{adjustbox}
+# #+LATEX_HEADER: \setbeamerfont{footnote}{size=\scriptsize}
+# #+LATEX_HEADER: \setbeamerfont{footnote}{size=\tiny}
+# #+LATEX_HEADER: \setbeamerfont{footnote}{size=\footnotesize}
+
+# The following packages are optional.
+# #+LATEX_HEADER: \usepackage{color}
+# #+LATEX_HEADER: \usepackage{animate}
+# #+LATEX_HEADER: \usepackage{tikz}
+# #+LATEX_HEADER: \usepackage{tikzsymbols}
+# #+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing}
+# #+LATEX_HEADER: \tikzset{zigzag/.style={decorate,decoration=zigzag}}
+# #+LATEX_HEADER: \usepackage{mathtools}
+# #+LATEX_HEADER: \usepackage{appendixnumberbeamer}
+# #+LATEX_HEADER: \adjustboxset{width=0.99\textwidth,center,keepaspectratio}
+
+#+LATEX_HEADER: \usepackage{bm}
+#+LATEX_HEADER: \usepackage{subfiles}
+#+LATEX_HEADER: \usepackage{etoolbox}
+#+LATEX_HEADER: \usepackage{listings}
+# +LATEX_HEADER: \usepackage{xkeyval}
+** New Commands & Options                                           :ignore:
+
+# +LATEX_HEADER: \newenvironment{definition}[1]{\begin{block}{Definition: #1}}{\end{block}}
+
+# The following commands define the copyrightbox function.
+#+LATEX_HEADER: \usepackage{copyrightbox}
+#+LATEX_HEADER: \makeatletter
+#+LATEX_HEADER: \renewcommand{\CRB@setcopyrightfont}{\tiny\color{gray}}
+#+LATEX_HEADER: \makeatother
+
+# The following command defines the outline for a beamer slides.
+# Comment the following command to disable the use of outline
+# +LATEX_HEADER: \AtBeginSection[]{\begin{frame}[allowframebreaks]{Topic}\tableofcontents[currentsection]\end{frame}}
+
+# +LATEX_HEADER: \AtBeginSubsection[]{\begin{frame}\centering\LARGE Today's lecture: \\ \bigskip \LARGE \lecturetitle \end{frame}}
+#+LATEX_HEADER: \newcommand{\todayslecture}[1]{%
+#+LATEX_HEADER:    \centering
+# +LATEX_HEADER:    \LARGE Today's lecture: \\ 
+#+LATEX_HEADER:    \bigskip 
+#+LATEX_HEADER:    \LARGE #1
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \newcommand{\keyterm}[1]{\textbf{#1}}
+# This option disables the use of superscripts and subscripts.
+#+OPTIONS: ^:nil
+
+# Institute
+#+BEAMER_HEADER: \institute[University of Stuttgart]{Chair of Data-Driven Fluid Dynamics (ITLR-DDSim) \\ Institut für Thermodynamik der Luft- und Raumfahrt \\ Universität Stuttgart}
+# Institute photo
+#+BEAMER_HEADER: \titlegraphic{\includegraphics[height=.15\paperheight,keepaspectratio]{./logos/simtech-itlr-unistr.jpg}}
+
+# Compiler for LaTex #
+#+LATEX_COMPILER: pdflatex
+
+#+TITLE: This is not the actual title for a beamer slides
+#+TITLE: But you can't leave the fake title empty.
+#+AUTHOR: ITLR DDSim
+
+** Stuttgart Theme Setup                                            :ignore:
+# The following command is the default setting for a beamer slide.
+# Normally we don't need to change it.
+#+COLUMNS: %45ITEM %10BEAMER_env(Env) %10BEAMER_act(Act) %4BEAMER_col(Col) %8BEAMER_opt(Opt)
+
+#+BEAMER_THEME: [hideothersubsections, left] Marburg
+#+BEAMER_HEADER: \usecolortheme{beaver}
+#+BEAMER_HEADER: \usefonttheme{professionalfonts}  
+#+BEAMER_HEADER: \setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+#+BEAMER_HEADER: \setbeamertemplate{caption}[numbered]
+#+BEAMER_HEADER: \setbeamertemplate{section in toc}[sections numbered]
+# +BEAMER_HEADER: \setbeamertemplate{subsection}[subsections numbered]
+
+# Change the font size of subsection in toc
+# #+LaTeX_HEADER: \setbeamerfont{subsection in toc}{size=\footnotesize}
+
+#+BEAMER_HEADER: \setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+# see http://www.uni-stuttgart.de/more/corporate_design/cd-dateien/Uni_Stuttgart_CD-Manual_2016_klein.pdf
+#+BEAMER_HEADER: \definecolor{uniSblue}{RGB}{0,65,145}
+#+BEAMER_HEADER: \definecolor{uniSlightblue}{RGB}{0,190,255}
+#+BEAMER_HEADER: \definecolor{uniSgray}{RGB}{62, 68, 76}
+#+BEAMER_HEADER: \definecolor{uniSyellow}{RGB}{255, 213, 0}
+#+BEAMER_HEADER: \definecolor{uniSred}{RGB}{230, 0, 50}
+#+BEAMER_HEADER: \definecolor{uniSgreen}{RGB}{0, 200, 50}
+
+#+BEAMER_HEADER: \makeatletter
+#+BEAMER_HEADER: \setbeamertemplate{sidebar canvas \beamer@sidebarside}[vertical shading][top=uniSlightblue!90,bottom=uniSblue!75]
+#+BEAMER_HEADER: \makeatother
+
+# +BEAMER_HEADER: \makeatletter
+# +BEAMER_HEADER: \setbeamertemplate{sidebar canvas left}[vertical shading][top=uniSlightblue!90,bottom=uniSblue!75]
+# +BEAMER_HEADER: \makeatother
+
+# +LATEX_HEADER: \makeatletter
+# +LATEX_HEADER: \setbeamertemplate{sidebar canvas left}{%
+# +LATEX_HEADER:   \begin{tikzpicture}[remember picture,overlay]%
+# +LATEX_HEADER:     \shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+# +LATEX_HEADER:    \node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.15\textwidth]{logos/review.png}};%
+# +LATEX_HEADER:  \end{tikzpicture}}
+# +LATEX_HEADER: \makeatother
+
+# +BEAMER_HEADER: \makeatletter
+# +BEAMER_HEADER: \setbeamertemplate{sidebar canvas left}{%
+# +BEAMER_HEADER:   \begin{tikzpicture}[remember picture,overlay]%
+# +BEAMER_HEADER:    \shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+# +BEAMER_HEADER:    \node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.15\textwidth]{logos/review.png}};%
+# +BEAMER_HEADER:  \end{tikzpicture}}
+# +BEAMER_HEADER: \makeatother
+
+#+BEAMER_HEADER: \setbeamercolor{palette sidebar secondary}{fg=black}
+#+BEAMER_HEADER: \setbeamercolor{section in sidebar shaded}{fg=uniSgray!85}
+#+BEAMER_HEADER: \setbeamercolor{subsection in sidebar shaded}{fg=uniSgray}
+#+BEAMER_HEADER: \setbeamercolor{subsection in sidebar}{fg=uniSblue}
+#+BEAMER_HEADER: \setbeamerfont{section in sidebar}{series=\bfseries}
+#+BEAMER_HEADER: \setbeamerfont{subsection in sidebar shaded}{series=\bfseries}
+#+BEAMER_HEADER: \makeatletter
+#+BEAMER_HEADER: \newcommand{\setnextsection}[1]{%
+#+BEAMER_HEADER:  \setcounter{section}{\numexpr#1-1\relax}%
+#+BEAMER_HEADER:  \beamer@tocsectionnumber=\numexpr#1-1\relax\space}
+#+BEAMER_HEADER: \makeatother
+#+LaTeX_HEADER: \addtobeamertemplate{footnote}{}{\vspace{0.3ex}}
+#+LaTeX_HEADER: \addtobeamertemplate{footnote}{\hskip -1.5em}{}
+
+
+*** Shades for blocks in Stuttgart Theme                           :ignore:
+#+LATEX_HEADER: \setbeamertemplate{blocks}[rounded][shadow]
+#+LATEX_HEADER: \setbeamercolor{block title}{fg=white,bg=uniSlightblue!95} 
+#+LATEX_HEADER: \setbeamercolor{block body}{fg=black,bg=uniSlightblue!10} 
+#+LATEX_HEADER: \setbeamercolor{block title example}{fg=white,bg=uniSgreen!65!black} 
+#+LATEX_HEADER: \setbeamercolor{block body example}{fg=black,bg=uniSgreen!10}
+#+LATEX_HEADER: \setbeamercolor{block title  alerted}{fg=white,bg=uniSred} 
+#+LATEX_HEADER: \setbeamercolor{block body alerted}{fg=black,bg=uniSred!10} 
+
+#+LATEX_HEADER: \setbeamercolor{palette primary}{bg=uniSgray!20,fg=uniSgray}
+#+LATEX_HEADER: \setbeamercolor{palette secondary}{bg=uniSblue,fg=white}
+#+LATEX_HEADER: \setbeamercolor{palette tertiary}{fg=white}
+#+LATEX_HEADER: \setbeamercolor{palette quaternary}{fg=uniSblue}
+
+#+LATEX_HEADER: \setbeamercolor{title}{fg=uniSblue,bg=uniSgray!20}
+#+LATEX_HEADER: \setbeamercolor{frametitle}{fg=uniSblue}
+
+#+LATEX_HEADER: \setbeamercolor{titlelike}{parent=palette quaternary}
+** Add Extra Block Types                                            :ignore:
+#+BEAMER_HEADER: \newenvironment <>{lowkey}[1]{%
+#+BEAMER_HEADER: \begin{actionenv}#2%
+#+BEAMER_HEADER: \def\insertblocktitle{#1}%
+#+BEAMER_HEADER: \par%
+#+BEAMER_HEADER: \setbeamercolor{block title}{fg=uniSblue,bg=uniSgray!15}
+#+BEAMER_HEADER: \setbeamercolor{block body}{bg=uniSgray!5}
+#+BEAMER_HEADER: \usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+
+#+BEAMER_HEADER: \newenvironment<>{plain}[1]{%
+#+BEAMER_HEADER:  \begin{actionenv}#2%
+#+BEAMER_HEADER:      \def\insertblocktitle{#1}%
+#+BEAMER_HEADER:      \par%
+#+BEAMER_HEADER:        \setbeamercolor{block title}{fg=uniSblue,bg=white}
+#+BEAMER_HEADER:        \setbeamercolor{block body}{bg=white}
+#+BEAMER_HEADER:       \setbeamertemplate{blocks}[rounded][shadow=false]
+#+BEAMER_HEADER: \usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+
+#+BEAMER_HEADER: \newenvironment<>{bold}[1]{%
+#+BEAMER_HEADER: \begin{actionenv}#2%
+#+BEAMER_HEADER: \def\insertblocktitle{\textbf{#1}}%
+#+BEAMER_HEADER: \par%
+#+BEAMER_HEADER: \setbeamercolor{block title}{fg=uniSblue,bg=white}
+#+BEAMER_HEADER: \setbeamercolor{block body}{bg=white}
+#+BEAMER_HEADER: \setbeamertemplate{blocks}[rounded][shadow=false]
+#+BEAMER_HEADER: \usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+
+** Bibliography Settings                                            :ignore:
+#+LATEX_HEADER: \usepackage[citestyle=authoryear-icomp, bibstyle=authoryear, backend=biber]{biblatex}
+#+LATEX_HEADER: \bibliography{ref.bib}
+
+#+PROPERTY: BIBLIOGRAPHY ref.bib
+
+# +LATEX_HEADER: \renewcommand{\thefootnote}{\textasteriskcentered}
+
+#+LATEX_HEADER: \usepackage{fontawesome}
+#+LATEX_HEADER: \renewcommand{\thefootnote}{\faBook}
+
+#+LATEX_HEADER: \renewcommand{\footnotesize}{\scriptsize}
+#+LATEX_HEADER: % Define citation color
+
+#+LATEX_HEADER: \definecolor{myCitationColor}{RGB}{0, 102, 204}
+
+#+LATEX_HEADER: % Redefine the \cite command for biblatex
+#+LATEX_HEADER: \renewcommand{\cite}[1]{\textcolor{myCitationColor}{\parencite{#1}}}
+** Utilities for Teaching                                           :ignore:
+*** Add Copyright Box for a Frame                                  :ignore:
+# Put the command at the end of a frame
+#+LATEX_HEADER: \newcommand{\copyrightnotice}[1]{%
+#+LATEX_HEADER:     \begin{tikzpicture}[remember picture,overlay]%
+#+LATEX_HEADER:         \node[anchor=south west, inner sep=0.1cm, text=gray, xshift=2cm] at (current page.south west) {%
+#+LATEX_HEADER:             {\tiny \textcopyright{} #1}%
+#+LATEX_HEADER:         };%
+#+LATEX_HEADER:     \end{tikzpicture}%
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \newcommand{\copyrightnoticecons}{\copyrightnotice{Type in the repeated content here.}
+#+LATEX_HEADER: }
+*** Adding Indicator Icons                                         :ignore:
+# Three new commands to add a small instruction figure at the left bottom of the page.
+#+LATEX_HEADER: \newcommand{\demoslide}{\begin{tikzpicture}[remember picture, overlay]\node[right=0.075\textwidth,above] at (current page.south west) {    \includegraphics[width=0.15\textwidth]{logos/demo.png}};\end{tikzpicture}}
+#+LATEX_HEADER: \newcommand{\readingslide}{\begin{tikzpicture}[remember picture, overlay]\node[right=0.075\textwidth,above] at (current page.south west) {    \includegraphics[width=0.15\textwidth]{logos/reading.png}};\end{tikzpicture}}
+#+LATEX_HEADER: \newcommand{\reviewslide}{\begin{tikzpicture}[remember picture, overlay]\node[right=0.075\textwidth,above] at (current page.south west) {    \includegraphics[width=0.15\textwidth]{logos/review.png}};\end{tikzpicture}}
+*** Change Background of a Frame                                   :ignore:
+# The following commands define the function of changing the background color of a frame.
+#+LATEX_HEADER: \defbeamertemplate*{background canvas}{reading}{%
+#+LATEX_HEADER:   \begin{tikzpicture}[remember picture,overlay]%
+#+LATEX_HEADER:     \fill[gray!20] (current page.south west) rectangle (current page.north east);%
+#+LATEX_HEADER:   \end{tikzpicture}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \defbeamertemplate*{background canvas}{review}{%
+#+LATEX_HEADER:   \begin{tikzpicture}[remember picture,overlay]%
+#+LATEX_HEADER:     \fill[green!10] (current page.south west) rectangle (current page.north east);%
+#+LATEX_HEADER:   \end{tikzpicture}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \defbeamertemplate*{background canvas}{mydefault}
+#+LATEX_HEADER: {%
+#+LATEX_HEADER:   \ifbeamercolorempty[bg]{background canvas}{}{\color{bg}\vrule width\paperwidth height\paperheight}% copied beamer default here
+#+LATEX_HEADER: }
+# +LATEX_HEADER: \defbeamertemplate*{sidebar canvas \beamer@sidebarside}{review}{%
+# +LATEX_HEADER:     \begin{tikzpicture}[remember picture,overlay]%
+# +LATEX_HEADER:       \shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+# +LATEX_HEADER:       \node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.15\textwidth]{logos/review.png}};%
+# +LATEX_HEADER:     \end{tikzpicture}%
+# +LATEX_HEADER: }
+# +LATEX_HEADER: \defbeamertemplate*{sidebar canvas \beamer@sidebarside}{mydefault}{%
+# +LATEX_HEADER:     \begin{tikzpicture}[remember picture,overlay]%
+# +LATEX_HEADER:       \shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+# +LATEX_HEADER:       \node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.15\textwidth]{logos/review.png}};%
+# +LATEX_HEADER:     \end{tikzpicture}%
+# +LATEX_HEADER: }
+# +BEAMER_HEADER: \defbeamertemplate*{sidebar canvas}{review}{%
+# +BEAMER_HEADER:     \begin{tikzpicture}[remember picture,overlay]%
+# +BEAMER_HEADER:       \shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+# +BEAMER_HEADER:       \node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.15\textwidth]{logos/review.png}};%
+# +BEAMER_HEADER:     \end{tikzpicture}%
+# +BEAMER_HEADER: }
+#+LATEX_HEADER: \BeforeBeginEnvironment{frame}{%
+#+LATEX_HEADER:   \setbeamertemplate{background canvas}[mydefault]%
+#+LATEX_HEADER:   \setbeamertemplate{sidebar canvas left}[vertical shading][top=uniSlightblue!90,bottom=uniSblue!75]
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \makeatletter
+#+LATEX_HEADER: \define@key{beamerframe}{reading}[true]{%
+#+LATEX_HEADER:   \setbeamertemplate{background canvas}[reading]%
+#+LATEX_HEADER: \setbeamerfont{itemize/enumerate body}{size=\normalsize}%
+#+LATEX_HEADER:   \setbeamertemplate{sidebar canvas left}{%
+#+LATEX_HEADER:     \begin{tikzpicture}[remember picture,overlay]%
+#+LATEX_HEADER:       \shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+#+LATEX_HEADER:       \node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.15\textwidth]{logos/reading.png}};%
+#+LATEX_HEADER:     \end{tikzpicture}}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \define@key{beamerframe}{review}[true]{%
+#+LATEX_HEADER:   \setbeamertemplate{background canvas}[review]%
+#+LATEX_HEADER:   \setbeamertemplate{sidebar canvas left}{%
+#+LATEX_HEADER:     \begin{tikzpicture}[remember picture,overlay]%
+#+LATEX_HEADER:       \shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+#+LATEX_HEADER:       \node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.1\textwidth]{logos/review.png}};%
+#+LATEX_HEADER:     \end{tikzpicture}}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \define@key{beamerframe}{note}[true]{%
+#+LATEX_HEADER:   \setbeamertemplate{sidebar canvas left}{%
+#+LATEX_HEADER:     \begin{tikzpicture}[remember picture,overlay]%
+#+LATEX_HEADER:       \shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+#+LATEX_HEADER:       \node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.16\textwidth]{logos/notes.png}};%
+#+LATEX_HEADER:     \end{tikzpicture}}%
+#+LATEX_HEADER:   \setbeamerfont{itemize/enumerate body}{size=\footnotesize}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \define@key{beamerframe}{default}[true]{%
+#+LATEX_HEADER:   \setbeamerfont{itemize/enumerate body}{size=\normalsize}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \makeatother
+
+# +LATEX_HEADER: \newcommand{\resetfont}{
+# +LATEX_HEADER:   \setbeamerfont{itemize/enumerate body}{size=\normalsize}%
+# +LATEX_HEADER: }
+*** Add Placeholder for Eqns                                       :ignore:
+#+LATEX_HEADER: \usepackage{amsmath} % Only if not already included
+#+LATEX_HEADER: \newcommand{\puteqn}[1]{%
+#+LATEX_HEADER:   \foreach \i in {1,...,#1} {%
+#+LATEX_HEADER:     \[\textcolor{gray}{\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u} - \nu \nabla^2 \mathbf{u}  + \frac{1}{\rho} \nabla p  = 0 }\]%
+# \]%
+#+LATEX_HEADER:   }%
+#+LATEX_HEADER: }
+
+*** Add Placeholder for Figure                                     :ignore:
+#+LATEX_HEADER: \newcommand{\putfig}[2][0.5\textwidth]{\fbox{\parbox[c][#1][c]{#2}{\vfill \centering \textcolor{gray}{Figure Placeholder}}}}
+#+LATEX_HEADER: \newcommand{\putfigcap}[3][0.5\textwidth]{\fbox{\parbox[c][#1][c]{#2}{\vfill \centering \textcolor{gray}{#3}}}}
+*** Add Float Content                                              :ignore:
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \newcommand{\content}[1]{%
+#+LATEX_HEADER: \begin{tikzpicture}[remember picture,overlay]%
+#+LATEX_HEADER: \node at (current page.north) [yshift=-1.5cm]{\color{gray}\shortstack{#1}};%
+#+LATEX_HEADER: \end{tikzpicture}%
+#+LATEX_HEADER: }
+
+*** Placeholder Box for Lecturing                                  :ignore:
+#+LATEX_HEADER: \usepackage{tcolorbox}
+#+LATEX_HEADER: \newcommand{\drawbox}[2]{%
+#+LATEX_HEADER:  \begin{tcolorbox}[%
+#+LATEX_HEADER:    width=\textwidth,          % Adjust width as needed
+#+LATEX_HEADER:    height= #2,                % Adjust height as needed
+#+LATEX_HEADER:    colframe=uniSlightblue,    % Frame color
+#+LATEX_HEADER:    colback=white,             % Background color
+#+LATEX_HEADER:    boxrule=0.5pt,             % Thickness of the frame
+#+LATEX_HEADER:    sharp corners,             % Sharp corners
+#+LATEX_HEADER:    valign=top,                % Vertical alignment: top
+#+LATEX_HEADER:    halign=left,               % Horizontal alignment: left
+#+LATEX_HEADER:    boxsep=0pt,                % No separation between frame and content
+#+LATEX_HEADER:    left=5pt,                  % Minimal left padding
+#+LATEX_HEADER:    right=5pt,                 % Minimal right padding
+#+LATEX_HEADER:    top=5pt,                   % Minimal top padding
+#+LATEX_HEADER:    bottom=5pt
+#+LATEX_HEADER:  ]%
+#+LATEX_HEADER:    \textcolor{gray}{#1}%
+#+LATEX_HEADER:  \end{tcolorbox}
+#+LATEX_HEADER: }
+
+*** Add Box for Previous Equations                                 :ignore:
+# +LATEX_HEADER: \newcommand{\eqnbox}[2]{%
+*** Add Box for Previous Equations                                 :ignore:
+#+LATEX_HEADER: \newcommand{\eqnbox}[1]{%
+#+LATEX_HEADER:  \begin{tcolorbox}[%
+#+LATEX_HEADER:    width=\textwidth,          % Adjust width as needed
+# +LATEX_HEADER:    height= 5cm,                % Adjust height as needed
+#+LATEX_HEADER:    colframe=uniSlightblue,    % Frame color
+#+LATEX_HEADER:    colback=white,             % Background color
+#+LATEX_HEADER:    boxrule=0.5pt,             % Thickness of the frame
+# +LATEX_HEADER:     title={#2},
+#+LATEX_HEADER:    rounded corners,             % Sharp corners
+#+LATEX_HEADER:     colbacktitle=uniSlightblue!30, % Title background color
+#+LATEX_HEADER:    valign=top,                % Vertical alignment: top
+#+LATEX_HEADER:    halign=center,               % Horizontal alignment: left
+#+LATEX_HEADER:    boxsep=3pt,                % No separation between frame and content
+#+LATEX_HEADER:    left=1pt,                  % Minimal left padding
+#+LATEX_HEADER:    right=5pt,                 % Minimal right padding
+#+LATEX_HEADER:    top=0pt,                   % Minimal top padding
+#+LATEX_HEADER:    bottom=2pt
+#+LATEX_HEADER:  ]%
+#+LATEX_HEADER:    \begin{gather*}%
+#+LATEX_HEADER:     #1%
+#+LATEX_HEADER:    \end{gather*}%
+#+LATEX_HEADER:  \end{tcolorbox}
+#+LATEX_HEADER: }
+*** Add Student Mode                                               :ignore:
+#+LATEX_HEADER: \usepackage{ifthen}
+#+LATEX_HEADER: \newboolean{studentmode}
+# This controls the overall behavior.
+#+LATEX_HEADER: \setboolean{studentmode}{false}
+*** New: Add Student Blocks for Hiding Contents                    :ignore:
+#+LATEX_HEADER: \setbeamertemplate{theorems}[numbered] 
+#+LATEX_HEADER: \newtheorem{derivation}{D} % for derivation
+#+LATEX_HEADER: \newtheorem{iderivation}{D} % for invisible derivation 
+#+LATEX_HEADER: \newtheorem{printderivation}{Derivation} 
+
+#+LATEX_HEADER: \AtBeginEnvironment{printderivation}{%
+#+LATEX_HEADER:   \setbeamertemplate{blocks}[sharp]
+#+LATEX_HEADER:   \setbeamercolor{block title}{bg=uniSgray!40, fg=white}
+#+LATEX_HEADER:   \setbeamercolor{block body}{bg=white, fg=black}
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \AtBeginEnvironment{derivation}{%
+#+LATEX_HEADER:   \setbeamertemplate{blocks}[sharp]
+#+LATEX_HEADER:   \setbeamercolor{block title}{bg=white, fg=uniSgray!50}
+#+LATEX_HEADER:   \setbeamercolor{block body}{bg=white, fg=uniSred!100}  
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \AtBeginEnvironment{iderivation}{%
+#+LATEX_HEADER:   \setbeamertemplate{blocks}[sharp]
+#+LATEX_HEADER:   \setbeamercolor{block title}{bg=white, fg=uniSgray!50}
+#+LATEX_HEADER:   \setbeamercolor{block body}{bg=white, fg=uniSred!0}  
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \AtEndEnvironment{printderivation}{%
+#+LATEX_HEADER:   \setbeamertemplate{blocks}[rounded]                
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \usepackage{environ}
+#+LATEX_HEADER: \newcounter{derivationcount}
+
+#+LATEX_HEADER: \newcommand{\storederivation}[1]{%
+#+LATEX_HEADER:   \stepcounter{derivationcount}%
+#+LATEX_HEADER:   \global\expandafter\let\csname derivation\arabic{derivationcount}\endcsname#1%
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \newcommand{\studentderivation}[1]{%
+#+LATEX_HEADER:     \begin{derivation}%
+#+LATEX_HEADER:         #1%
+#+LATEX_HEADER:     \end{derivation}%
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \NewEnviron{student}{%
+#+LATEX_HEADER:     \studentderivation{\BODY}%
+#+LATEX_HEADER:     \storederivation{\BODY}%
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \usepackage{pgffor}
+
+#+LATEX_HEADER: \ifthenelse{\boolean{studentmode}}{
+#+LATEX_HEADER: \renewcommand{\studentderivation}[1]{%
+#+LATEX_HEADER:     \begin{iderivation}%
+#+LATEX_HEADER:         #1%
+#+LATEX_HEADER:     \end{iderivation}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER:\ifcsname printallderivations\endcsname
+#+LATEX_HEADER:  % If \printallderivation is defined, renew it
+#+LATEX_HEADER: \renewcommand{\printallderivations}{%
+#+LATEX_HEADER:    \begin{frame}[allowframebreaks]{Derivations}%
+#+LATEX_HEADER:    \foreach \i in {1,...,\arabic{derivationcount}} {%
+#+LATEX_HEADER:        \begin{printderivation}%
+#+LATEX_HEADER:           \csname derivation\i\endcsname%
+#+LATEX_HEADER:        \end{printderivation}%
+#+LATEX_HEADER:        \vspace{1em} % Space between derivations
+#+LATEX_HEADER:    }%
+#+LATEX_HEADER:    \end{frame}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER:\else
+#+LATEX_HEADER:  % If \printallderivation is not defined, define it
+#+LATEX_HEADER: \newcommand{\printallderivations}{%
+#+LATEX_HEADER:    \begin{frame}[allowframebreaks]{Derivations}%
+#+LATEX_HEADER:    \foreach \i in {1,...,\arabic{derivationcount}} {%
+#+LATEX_HEADER:        \begin{printderivation}%
+#+LATEX_HEADER:           \csname derivation\i\endcsname%
+#+LATEX_HEADER:        \end{printderivation}%
+#+LATEX_HEADER:        \vspace{1em} % Space between derivations
+#+LATEX_HEADER:    }%
+#+LATEX_HEADER:    \end{frame}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER:\fi
+#+LATEX_HEADER: }{
+#+LATEX_HEADER: \ifcsname printallderivations\endcsname
+#+LATEX_HEADER: \renewcommand{\printallderivations}{%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \else
+#+LATEX_HEADER: \newcommand{\printallderivations}{%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \fi
+#+LATEX_HEADER: \renewcommand{\studentderivation}[1]{%
+#+LATEX_HEADER:     \begin{derivation}%
+#+LATEX_HEADER:         #1%
+#+LATEX_HEADER:     \end{derivation}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: }
+
+*** COMMENT Add Student Blocks for Hiding Contents                 :ignore:
+#+LATEX_HEADER: \setbeamertemplate{theorems}[numbered] 
+#+LATEX_HEADER: \newtheorem{derivation}{D} % for derivation 
+#+LATEX_HEADER: \newtheorem{printderivation}{Derivation} 
+
+#+LATEX_HEADER: \AtBeginEnvironment{printderivation}{%
+#+LATEX_HEADER:   \setbeamertemplate{blocks}[sharp]
+#+LATEX_HEADER:   \setbeamercolor{block title}{bg=uniSgray!40, fg=white}
+#+LATEX_HEADER:   \setbeamercolor{block body}{bg=white, fg=black}
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \AtBeginEnvironment{derivation}{%
+#+LATEX_HEADER:   \setbeamertemplate{blocks}[sharp]
+#+LATEX_HEADER:   \setbeamercolor{block title}{bg=white, fg=uniSgray!50}
+#+LATEX_HEADER:   \setbeamercolor{block body}{bg=white, fg=uniSred!100}  
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \AtBeginEnvironment{iderivation}{%
+#+LATEX_HEADER:   \setbeamertemplate{blocks}[sharp]
+#+LATEX_HEADER:   \setbeamercolor{block title}{bg=white, fg=uniSgray!50}
+#+LATEX_HEADER:   \setbeamercolor{block body}{bg=white, fg=uniSred!0}  
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \AtEndEnvironment{printderivation}{%
+#+LATEX_HEADER:   \setbeamertemplate{blocks}[rounded]                
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \usepackage{environ}
+#+LATEX_HEADER: \newcounter{derivationcount}
+
+#+LATEX_HEADER: \newcommand{\storederivation}[1]{%
+#+LATEX_HEADER:   \stepcounter{derivationcount}%
+#+LATEX_HEADER:   \global\expandafter\let\csname derivation\arabic{derivationcount}\endcsname#1%
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \newcommand{\studentderivation}[1]{%
+#+LATEX_HEADER:     \begin{derivation}%
+#+LATEX_HEADER:         #1%
+#+LATEX_HEADER:     \end{derivation}%
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \NewEnviron{student}{%
+#+LATEX_HEADER:     \studentderivation{\BODY}%
+#+LATEX_HEADER:     \storederivation{\BODY}%
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \usepackage{pgffor}
+#+LATEX_HEADER: \newcommand{\printallderivations}{%
+#+LATEX_HEADER:    \begin{frame}[allowframebreaks]{Derivations}%
+#+LATEX_HEADER:    \foreach \i in {1,...,\arabic{derivationcount}} {%
+#+LATEX_HEADER:        \begin{printderivation}%
+#+LATEX_HEADER:           \csname derivation\i\endcsname%
+#+LATEX_HEADER:        \end{printderivation}%
+#+LATEX_HEADER:        \vspace{1em} % Space between derivations
+#+LATEX_HEADER:    }%
+#+LATEX_HEADER:    \end{frame}%
+#+LATEX_HEADER: }
+*** Add Index Support for Beamer                                   :ignore:
+# +LATEX_HEADER: \makeatletter
+# +LATEX_HEADER: \renewcommand{\@wrindex}[1]{%
+# +LATEX_HEADER:   \protected@write\@indexfile{}{%
+# +LATEX_HEADER:     \string\indexentry{#1|hyperpage}{\thepage}%
+# +LATEX_HEADER:   }%
+# +LATEX_HEADER: }
+# +LATEX_HEADER: \makeatother
+# +LATEX_HEADER: \newcommand{\bb}[1]{\hyperpage{#1}}
+#+LATEX_HEADER: \usepackage{makeidx}
+#+LATEX_HEADER: \makeindex
+#+LATEX_HEADER: \newenvironment{theindex}
+#+LATEX_HEADER:  {\let\item\par
+#+LATEX_HEADER:   %definitions for subitem etc
+#+LATEX_HEADER:   }{}
+#+LATEX_HEADER: \newcommand\indexspace{}
+
+#+LATEX_HEADER: \newcommand{\hyperlinkblue}[2]{\hyperlink{#1}{\textcolor{uniSblue}{#2}}}
+
+#+LATEX_HEADER: \newcommand{\Indexed}[1]{\index{#1|hyperlinkblue{index:#1}}\hypertarget{index:#1}{\textcolor{uniSblue}{#1}}}
+
+#+LATEX_HEADER: \newcommand{\printallindex}{%
+#+LATEX_HEADER:    \begin{frame}[allowframebreaks]{German Words}%
+#+LATEX_HEADER:        \printindex
+#+LATEX_HEADER:    \end{frame}%
+#+LATEX_HEADER: }
+# +LATEX_HEADER: \usepackage{hyperref}
+
+** COMMENT Grid for Figure Sizing                                   :ignore:
+#+LATEX_HEADER: \usepackage{calc}
+#+LATEX_HEADER: \setbeamertemplate{background}{
+#+LATEX_HEADER:     \begin{tikzpicture}[remember picture,overlay,shift=(current page.south west)]
+#+LATEX_HEADER:         \begin{scope}[x={(current page.south east)},y={(current page.north west)}]
+#+LATEX_HEADER:         \draw[xstep=0.25, ystep=0.1,green!30,thin] (0.15,0) grid (1, 0.9);
+#+LATEX_HEADER:         \draw[thick,->,blue!80] (0.95,0) -- (0.95,0.85);
+#+LATEX_HEADER:         \foreach \y in {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8}
+#+LATEX_HEADER:         \draw[blue!70] (0.95, \y ) -- (0.96,\y ) node[anchor=west] {$\y$};
+#+LATEX_HEADER:     \end{scope}
+#+LATEX_HEADER: \end{tikzpicture} }
+** Chapter 1                                                        :ignore:
+#+LATEX_HEADER: \newcommand{\Var}{\mathbb{V}\mathrm{ar}}
+#+LATEX_HEADER: \newcommand{\Cov}{\mathbb{C}\mathrm{ov}}
+#+LATEX_HEADER: \newcommand{\Ex}{\mathbb{E}}
+#+LATEX_HEADER: \newcommand{\bbdrawing}[1]{\tikz\draw (0,0)  rectangle (0.99\textwidth,#1\textheight);}
+#+LATEX_HEADER: \newcommand{\bbdrawingtx}[2]{%
+#+LATEX_HEADER:  \protect#2:\\
+#+LATEX_HEADER:  \tikz\draw (0,0) rectangle (0.99\textwidth,#1\textheight);}
+** Chapter 2                                                        :ignore:
+#+LATEX_HEADER: \newcommand{\reynoldstress}{\boldsymbol{\tau}} 
+#+LATEX_HEADER: \newcommand{\bu}{\mathbf{u}}
+#+LATEX_HEADER: \usepackage{empheq}
+#+LATEX_HEADER: \usepackage{esint}
+#+LATEX_HEADER: \usepackage{tikzsymbols}
+#+LATEX_HEADER: \usepackage{cancel}
+* COMMENT Source Attribution    
+*** Source attribution: Wording Standard I
+
+**** General Principles
+When acknowledging the use of images, data, or entire slides from others in your presentations, it's important to ensure you are *clear* and *precise* about the sources and the nature of the material you are using. 
+
+**** Wording for Images
++ Used entire image from *published sources* (citable literature) /Image source: Smith et al., 2023, Journal of Neuroscience/ (can abbreviate name of sources, e.g., JFM, JCP for wellknow sourcea and "J. Neuroscience" for unknown sources)
++ Used image from *websites*: /Image source: some-website.com/ (can omit www and detailed link)
++ Used *some elements* of image: /Contain image elements from: website.com/ (source specification same as above)
+
+
+*** Source attribution: Wording Standard II
+
+**** Wording for Used Data
+
++ Used *published data* to make own graph: /Data source: Smith et al. 2023, JCP/
++ Used *some data* to make own graph: /Contain data from: Smith et al. 2023/
++ Used *unpublished data* to make own graph (relatively rare in practice): Use one of the wording above with additional explanation, e.g., /Data source: Smith et al. (unpublished, used with permission)./ 
+
+**** Wording  for Slides Contents
++ Borrowed an entire slide from others, with only formatting changes or minor modifications: /Adapted from Prof. Jane Doe, Elements of Statistical Learning/
++ Partially borrowed slide with own contributions: /Partially adapted from Prof. Jane Doe, Elements of Statistical Learning/
++ Overall idea clearly inspired or borrowed from others, without clear wording (relatively rare):  /Slide inspired by Prof. Jane Doe, Elements of Statistical Learning/
+
+
+*** Source attribution: Technical Implementation in Org Template
+
+We designed a unified command to make the attribution consistent, which can cover most (but not all of the situations above:
+
+| type  | extent  | source  |
+|-------+---------+---------|
+| image | all     | Smith   |
+| data  | partial | web.com |
+| slide | idea    |         |
+|-------+---------+---------|
+
+(to be done)
+* COMMENT Installing All Required Packages 
+:PROPERTIES:
+:alt_title: Required Packages
+:END:
+*** Install org-contrib Package
+- When using the org, it is sometimes useful to mark content using *ignore* tag.
+- We want to fold LaTex headers because they are not used during writing.
+  - E.g., configuration header
+**** Steps for installing org-contrib
+- Open Emacs.
+- Press M-x and then type "list-packages". Then press RET to jump to the package list.
+- Press Command-F to search "org-contrib" and install this package following the instruction.
+- Find the initial file (*init.el* for mac) and add the following code.
+  #+begin_src emacs-lisp
+(require 'ox-extra)
+(ox-extras-activate '(latex-header-blocks ignore-headlines))
+#+end_src
+- Restart the emacs to see if the ignore tag works. (Use C-c C-q, type "ignore" and press RET to enter the tag)
+
+*** Install org-ref and ivy-bibtex
+- Add the following commands in your initial file first.
+  #+begin_src emacs-lisp
+  (add-to-list 'package-archives
+	       '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+  #+end_src
+- Press *M-x* ,type package-list-packages and press *Enter*.
+  
+  Search the "org-ref" and "ivy-bibtex" packages and install them.
+*** Add Shortcuts for Citation
+- Add the following commands in your initial file:
+  #+begin_src emacs-lisp
+(setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+(require 'org-ref)
+(require 'org-ref-ivy)
+(require 'bibtex)
+(define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
+(defun my/org-bibtex-completion-bibliography ()
+  "Retrieve the bibliography paths from Org properties or set defaults."
+  (let* ((bib (org-entry-get-with-inheritance "BIBLIOGRAPHY"))
+         (files (if bib
+                    (mapcar 'string-trim (split-string bib ","))
+                  '("~/research/references1.bib" "~/research/references2.bib"))))
+    (setq-local bibtex-completion-bibliography files)))
+
+(add-hook 'org-mode-hook 'my/org-bibtex-completion-bibliography)
+
+(require 'ivy-bibtex)
+    #+end_src
+* COMMENT Change Initial File
+:PROPERTIES:
+:alt_title: Initial File
+:END:
+*** Add Shortcuts for Exporting LaTex/beamer File
+- Add the following code in the initial file:
+  #+begin_src emacs-lisp
+  (with-eval-after-load 'org
+    (define-key org-mode-map [f6]  #'org-latex-export-to-pdf)
+    (define-key org-mode-map [f7]  #'org-beamer-export-to-pdf))
+  #+end_src
+- You should be able to press f7 to directly export beamer slides.
+  
+*** Add Listing Setting for org
+- Add the following code in the initial file:
+  #+begin_src emacs-lisp
+    (setq org-latex-listings t
+      org-latex-listings-options
+      '(("backgroundcolor" "\\color[gray]{0.95}")
+       ("keywordstyle" "\\color[RGB]{31,119,180}")  ; blue
+       ("commentstyle" "\\color[RGB]{44,160,44}")   ; green
+       ("stringstyle" "\\color[RGB]{214,39,40}")    ; red
+       ("basicstyle" "\\ttfamily \\scriptsize")
+       ("keepspaces" "true")
+       ("breaklines" "true")
+       ("deletekeywords" "{ps,scan}"))
+      org-latex-packages-alist
+      '(("" "color" nil)
+        ("" "listings" nil)))
+  #+end_src
+*** Add Extra Block Types
+- Add the following code in the initial file:
+  #+begin_src emacs-lisp
+    '(org-beamer-environments-extra
+      '(("lowkey" "L" "\\begin{lowkey}%a{%h}" "\\end{lowkey}")
+        ("plain" "P" "\\begin{plain}%a{%h}" "\\end{plain}")
+        ("bold" "B" "\\begin{bold}%a{%h}" "\\end{bold}")))
+  #+end_src
+- Check the ~Add Extra Block Types~ block to see the command lines.
+*** COMMENT Example of Extra Block Types
+**** Lowkey Block                                       :B_beamercolorbox:
+:PROPERTIES:
+:BEAMER_env: lowkey
+:END:
+This is the "Lowkey" block.
+**** Plain Block                                                 :B_plain:
+:PROPERTIES:
+:BEAMER_env: plain
+:END:
+This is the "Plain" block.
+**** Bold Block                                                   :B_bold:
+:PROPERTIES:
+:BEAMER_env: bold
+:END:
+This is the "Bold" block.
+* COMMENT Slide Elements
+*** Standard Slide witout Figure
+- Each slide should have 1-3 bullet points.
+  - Sub-bullet point can also be used to further illustrate the idea.
+  - Each bullet point should be no more than two lines long.
+- Slide with only figures are not acceptable.
+**** This is a blue block
+- You can also use block to highlight something.
+**** This is a red block                                    :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+- You can use different color of blocks.
+**** This is a green block                                :B_exampleblock:
+:PROPERTIES:
+:BEAMER_env: exampleblock
+:END:
+The content in the block don't have to be bullet-point style.
+*** COMMENT Standard Slide with Figure
+#+ATTR_LATEX: :options {width=0.75\textwidth,totalheight=0.6\paperheight,keepaspectratio,center} 
+#+begin_adjustbox
+#+LATEX: \copyrightbox[b]{\includegraphics[width=0.7\textwidth]{./figs/placeholder}}{Image Courtesy of FIRST BENEFITS INSURANCE MUTUAL}
+#+end_adjustbox
+- The size of the figure should be appropriate and readers should be able to read the text in the figure.
+- It is always important to specify the source of the image.
+- You can adjust the size of the figure using adjustbox packages.
+*** Teaching Slide with Copyright Box
+- Whenever you use someone's slides to create teaching materials, make sure to credit them appropriately.
+- You can call the following command to quickly create a copyright box for the whole frame.
+  #+begin_src
+    \copyrightslide
+  #+end_src
+- A copyright box will appear at the left bottom of the frame.
+  \copyrightslide
+*** Teaching Slide with Small Icon
+- Sometimes it is helpful to have a small icon at the left bottom of the page to indicate the content of current slide.
+- We have defined three different new commands to achieve this results.
+  - Check ~Commands for Teaching: Adding Instruction Figures~ block.
+- Current slide is tagged as a demo slide by using the following command:
+  #+begin_src
+    \demoslide
+  #+end_src
+\demoslide
+*** Useful Shortcuts: Add Source Code 
+- Add Source Code Block: press *C-c* *C-,* and type *s*.
+- You can also define different coding laguage after begin_src.
+- Here is a list of supported coding languages:
+  https://orgmode.org/worg/org-contrib/babel/languages/index.html
+  
+*** Useful Shortcuts: Add Blocks
+**** Add one block                                               :B_block:
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+- Add Source Code Block: press *C-c* *C-b* and type *b* (for regular block).
+- There exist different options when choosing the blocks.
+**** Add two blocks in the same line                             :B_block:
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+- It is possible to add two blocks in the same line like this slide.
+- Add the "*:BEAMER_col: 0.5*" in the properies of both blocks.
+- You can adjust the number to change the space it occupies.
+*** Useful Shortcuts: Add LaTex block
+- Add LaTex Code Block: press *C-c* *C-,* and type *l*.
+  - The content in this block will be treated as LaTex code.
+- Add one-line LaTex code:
+
+  ~#+LATEX: any arbitray LaTex code~
+*** Useful In-Buffer Settings: Indent
+- Add the following code into the .org file to turn on the indentation mode:
+  ~#STARTUP: indent~
+- The default option is nonindent.
+- If you want to change this option globally,
+  you can open "Options"-"Customize Emacs"-"Top-level Customization Group".
+- Search "startup-folded" and change the value.
+*** Useful Command Line: pause
+- Bullet points can be exported one after one another.
+\pause
+- Insert ~\pause~ between each bullet point to achieve this results.
+*** Useful Command Line: overlay
+#+ATTR_BEAMER: :overlay +-
+- If you have more than two bullet points, you can use ~overlay~.
+ #+begin_src
+   #+ATTR_BEAMER: :overlay +-
+ #+end_src
+- Each bullet point will be exported one by one.
+**** Block                                                  :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:BEAMER_act: <3->
+:END:
+- The command also works for blocks.
+- Add the following code in the properties of the block
+  #+begin_src
+    :BEAMER_act: <3->
+  #+end_src
+
+*** Useful Shortcut: Add Footnote-style Citation
+- Add citation: press *C-c* *]* and choose the paper you want to cite.
+- Before using this feature, you need to include the correct .bib file.
+  
+  Change the following setting (in Bibliography Settings) to match your own .bib file.
+  #+begin_src
+  #+LATEX_HEADER: \bibliography{biblist.bib}
+
+  #+PROPERTY: BIBLIOGRAPHY biblist.bib
+  #+end_src
+- This is an example of citation [[footcite:&gu2018recent;&wang2019learning]]
+- The default citation style is ~footcite~ and symbol is ~asterisk~.
+  - You can change to other citation style freely.
+*** Useful Shortcut: Add Inline Citation
+- If you have more than 3 papers to cite in a single frame, it is recommended to use the normal cite command.
+- Example of citation [[cite:&raissi2019physics]].
+- The color can be changed easily.
+*** Useful Feature: List Bibliography
+:PROPERTIES:
+:BEAMER_opt: reading
+:END:
+Use the following command to generate the bibliography for your slides.
+#+begin_src
+  \printbibliography
+#+end_src
+The results:
+  \printbibliography
+If you encounter the problem where the citations are missing, try restarting your computer.
+*** COMMENT ABORTED Feature: Student environment in handout mode
+- Change the first variable to achieve different display effect.
+  #+begin_src
+  #+LaTeX_CLASS_OPTIONS: [handout, aspectratio=1610]
+  #+end_src
+- If setting the first variable as *~beamer~*, the equation will be displayed normally.
+  \[
+  y = ax + b
+  \]
+- If setting the first variable as *~handout~*, the equation will be rendered as white (invisible).
+  \begin{student}
+  \[
+  y = ax + b
+  \]
+  \end{student}
+  #+begin_src
+  #+LaTeX_CLASS_OPTIONS: [beamer, aspectratio=1610]
+  #+end_src
+- You can change the settings of the student environment.
+  - *Do not change the one implemented in the main.org*
+  #+begin_src
+  #+LATEX_HEADER:\newenvironment{student}{\color{white}}{}
+  #+end_src
+
+* COMMENT Newly Added Features
+*** Feature: Add the instruction frame
+- Use the command below to add the instruction frame wherever you want.
+  #+begin_src
+    ***
+    \todayslecture{Introduction to Newly Added Features}
+  #+end_src
+- ~***~ creates an empty frame first.
+- Then it uses the command to insert the content.
+*** Today's Lecture
+\todayslecture{Introduction to Newly Added Features}
+*** COMMENT Feature: add ~\keyterm~ to make content bold
+- Use the command below to make the content bold.
+#+begin_src
+    \keyterm{This sentence is bold.}
+#+end_src
+- \keyterm{This sentence is bold.}
+*** Feature: Student Environment
+- Use the following command to insert student environment.
+- The default setting for student environment is the content will become white.
+  (Here, I change the color to blue to just to show the results.)
+  #+begin_src
+    #+begin_student
+      \[ y = ax + b \]
+    #+end_student
+  #+end_src
+  #+begin_student
+      \[ y = ax + b \]
+  #+end_student
+*** COMMENT Useful Shortcut: only show a single window in org mode
+Press C-x, 1 to show only one window.
+*** Review Material                                                          
+:PROPERTIES:
+:BEAMER_opt: review
+:END:
+- Bullet point
+*** Reading Material                                                      
+:PROPERTIES:
+:BEAMER_opt: reading
+:END:
+- Bullet
+*** Feature: Draw a box with gray content inside                  
+- Bullet point
+#+Beamer: \drawbox{This is the math :\(\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u} - \nu \nabla^2 \mathbf{u}  + \frac{1}{\rho} \nabla p  = 0 \)}{5cm}
+#+begin_src
+  #+Beamer: \drawbox{Content}{height of the box: e.g., 5cm}
+#+end_src
+*** Shortcut: Add Figure                                         
+- Add the following code into initial file:
+#+begin_src emacs-lisp
+  (defun insert-org-beamer-fig ()
+  "Insert figure"
+  (interactive)
+  (insert "#+ATTR_LATEX: :options {width=1.0\\textwidth,totalheight=0.6\\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\\includegraphics[width=1.0\\textwidth]{fig_name.pdf}
+#+end_adjustbox")
+  (previous-line)
+  (end-of-line))
+(global-set-key (kbd "C-c C-x l") ' insert-org-beamer-fig)
+#+end_src
+*** COMMENT Test: Insert new adjust box
+#+ATTR_LATEX: :options {width=1.0\textwidth,totalheight=0.6\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[width=1.0\textwidth]{fig_name.pdf}
+#+end_adjustbox
+
+*** Feature: Shortcut to add definition block                     
+#+ATTR_LATEX: :options [function]
+#+begin_definition
+  y = ax + b
+#+end_definition
+- Press "M-x" and enter `customize variable`
+- Search for "structure" and find the "org-structure-template-alist"
+- Enter the page
+- Add "d" for "definition", then save the settings
+Press "C-c C-, d" to directly insert definition block.
+*** Feature: Shortcut to add definition file                      
+#+begin_student
+  y = ax + b
+#+end_student
+- Press "M-x" and enter `customize variable`
+- Search for "structure" and find the "org-structure-template-alist"
+- Enter the page
+- Add "st" for "student", then save the settings
+Press "C-c C-, S" to directly insert student block.
+*** Test: Shrink the space around an equation                 
+- Bullet point
+\[
+E = mc^2
+\]
+- Bullet point
+\[
+\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u} - \nu \nabla^2 \mathbf{u}  + \frac{1}{\rho} \nabla p  = 0
+\]
+- Bullet point
+  
+\[
+\int_{x^2 + y^2 \leq R^2} f(x,y)\,dx\,dy
+= \int_{\theta=0}^{2\pi} \int_{r=0}^R
+f(r\cos\theta,r\sin\theta) r\,dr\,d\theta.\
+\]
+*** Feature: URL color change                                                     
+- [[https://www.overleaf.com/learn/latex/%5Cabovedisplayskip_and_related_commands][Notes on abovesdisplayskip]]
+- https://www.example.com
+*** Instruction: Correct way to use drawbox
+#+Beamer: \drawbox{Take derivatives \(\partial J/\partial{u}\)}{0.25\paperheight}
+- First way:
+#+begin_src
+#+Beamer: \drawbox{Take derivatives \(\partial J/\partial{u}\)}{0.25\paperheight}
+#+Beamer: \drawbox{\(\nabla_{\bm{u}} \mathcal{L}, \nabla_{\bm{\omega}} \mathcal{L}\)}{0.25\paperheight}  
+#+end_src
+- Second way:
+#+begin_src 
+#+begin_export latex
+\drawbox{Take derivatives \(\frac{\partial J}{\partial{u}}, \frac{\partial J}{\partial{w}}\)}{0.25\paperheight}
+#+end_export
+#+end_src
+- If title contains no math:
+#+begin_src 
+\drawbox{Take derivatives}{0.25\paperheight}
+#+end_src
+*** Feature: In Org-Mode beamer only, `/` as bold        
+# - Add the following code to ~init.el~
+#+begin_src emacs-lisp
+  ;; replace \emph as \textbf
+  (defun my/org-beamer-export-filter-boldify-italic (text backend info)
+    "Change italic text to bold in Org Beamer exported files."
+    (when (org-export-derived-backend-p backend 'beamer)
+      (replace-regexp-in-string "\\\\emph{\\([^}]+\\)}" "\\\\textbf{\\1}" text)))
+  
+  (add-to-list 'org-export-filter-final-output-functions
+               'my/org-beamer-export-filter-boldify-italic)
+  
+#+end_src
+- use the following code to do the bold thing:
+#+begin_src
+  /bold/
+#+end_src
+- The results:
+/Bold/
+*** Align*~ and ~Align~ can be directly used in org                  
+\begin{align*}
+ a & = b\\
+ b & = c\\
+ c & = awdawdawdawdwa
+\end{align*}
+*** COMMENT Test: Trim the equation space                        
+
+*** COMMENT Test                                                          :current:
+
+#+begin_export latex
+\begin{aligned}
+ a & = b\\
+ b & = c\\
+ c & = awdawdawdawdwa
+\end{aligned}
+#+end_export
+*** Test: Box for Previous Equations                              :current:
+
+#+Beamer: \eqnbox{\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u} - \nu \nabla^2 \mathbf{u}  + \frac{1}{\rho} \nabla p  = 0 \\ a}{Previous equation about XXX}\
+* COMMENT Test for two equations in one box
+*** Test: Box for Previous Equations                              :current:
+#+Beamer: \eqnbox{\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u} - \nu \nabla^2 \mathbf{u}  + \frac{1}{\rho} \nabla p  = 0
+#+Beamer: \\ 2x - 5y =  8}{Previous equation about XXX}
+* COMMENT Test1
+*** Derivation and print
+**** Test Eqn within Block
+\begin{student}
+    \[y=ax + b\]
+\end{student}
+\begin{student}
+    This is a derivation.
+\end{student}
+* COMMENT Test2
+*** Derivation and print
+\begin{student}
+    third
+\end{student}
+\begin{student}
+    fourth
+\end{student}
+#+begin_student
+fifth
+#+end_student
+
+- bullet point
+- fafa
+  #+begin_student
+  
+  #+end_student
+*** How to use it?
++ Redefine "student" environment.
++ Automatically allow frame break when printing derivations.
++ Can insert any content.
+**** Usage
+- Press "C-C C-," and type "S"
+- Create a section for printing out all the derivations.
+  #+begin_src
+    #+BEAMER: \printallderivations
+  #+end_src
+* COMMENT Test3 Underscore                                             :show:
+
+*** Test Index 1
+The ensemble _Kalman_ filter (EnKF) is a recursive filter suitable for problems with a large number of _variables_, such as discretizations of partial differential equations in geophysical models. The EnKF originated as a version of the Kalman filter for large problems (essentially, the covariance matrix is replaced by the sample _covariance_), and it is now an important data _assimilation_ component of ensemble forecasting.
+
+* COMMENT Test 4 Index
+*** Test Index 2
+In computational /fluid dynamics/ simulations of industrial flows, models based on the Reynolds-averaged Navier–Stokes (RANS) equations are expected to play an important role in decades to come. However, model uncertainties are still a major obstacle for the predictive capability of RANS simulations. This review examines both the parametric and structural uncertainties in /turbulence models/.
+
+*** Test Index 3
+
+We review recent literature on _data-free_ (uncertainty propagation) and data-driven (_statistical inference_) approaches for quantifying and reducing model uncertainties in RANS simulations. Moreover, the fundamentals of uncertainty propagation and Bayesian inference are introduced in the context of RANS model uncertainty quantification. Finally, the literature on uncertainties in scale-resolving simulations is briefly reviewed with particular emphasis on large eddy simulations.
+
+*** Test index 4
+- *State vector* of the system is denoted as 
+- For _discrete systems_ of \( m \) *degrees of freedom*
+- For _continuous systems_, (e.g., with finite difference, finite volume, finite elements schemes), the PDE becomes an ODE.
+
+
+*** State-, Parameter- and Joint Estimations                           :en:
+
++ We assumed the task of data assimilation to be _state estimation_ when introducing the concepts of data assimilation.
++ However, in many places we are actually doing  _parameter inference_ (i.e., inferring the model)! This is more relevant for the theme of our course.
++ In fact, we can even _augment_ the "state"  include parameters and perform a _joint estimation_ of state and parameters:
+
+*** Die Idee der automatischen Differentiation
+
+_Automatische Differentiation_ (AD) basiert auf der einfachen Tatsache, dass jede Computerberechnung eine _Abfolge_ von elementaren Operationen und Funktionen ausführt. Dazu _gehören Grundrechenarten_ wie Addition oder Multiplikation sowie Funktionen wie _Sinus_, _Cosinus_ oder _Logarithmus_. 
+
+Durch die wiederholte Anwendung der Kettenregel können wir für jede dieser _Operationen Ableitungen_ beliebiger Ordnung automatisch berechnen. Der Vorteil von AD ist, dass diese Berechnungen extrem präzise sind, oft bis zur maximalen Rechengenauigkeit des Computers. Außerdem ist der zusätzliche Aufwand an Operationen im Vergleich zum Originalprogramm minimal, meist nur ein kleiner konstanter Faktor.
+
+Die gezeigte Liste enthält die grundlegenden Operationen, die von AD unterstützt werden, von \(x + y\) bis hin zu Potenzfunktionen wie \(x^k\). Jede dieser Operationen wird Schritt für Schritt in einem _gerichteten azyklischen Graphen_ (DAG) abgebildet, was die Grundlage der automatischen Differentiation bildet.
+
+*** Skript: Gerichteter azyklischer Graph (DAG)
+Auf dieser Folie sehen wir den gerichteten azyklischen Graphen, kurz DAG, der die Implementierung der Funktion \( y = \left( \sum_{i=0}^{m-1} x_j^2 \right)^2 \) für den Fall \( m = 3 \) darstellt.
+
+In diesem Graphen wird jede Operation und Zwischenergebnis als _Knoten_ dargestellt, und die Verbindungen zeigen, in welcher _Reihenfolge_ die Berechnungen ablaufen müssen. Da der DAG gerichtet und azyklisch ist, gibt es keine _Schleifen_, was sicherstellt, dass die Berechnung geordnet und ohne Wiederholungen erfolgt. Solche Darstellungen sind _äußerst_ hilfreich, um die Abhängigkeiten zwischen den Variablen und Operationen in einem komplexen Ausdruck zu visualisieren. Der DAG macht die Struktur der automatischen Differentiation sichtbar und zeigt uns, wie die Ableitungen _Schritt für Schritt_ berechnet werden.
+
+* COMMENT Derivations
+
+#+BEAMER: \printallderivations
+*** COMMENT Test: Trim the equation space                         :current:
+#+BEAMER: \mymath{\frac{\partial \mathbf{u}}{\partial t}%
+#+BEAMER: + \mathbf{u} \cdot \nabla \mathbf{u} - \nu \nabla^2 \mathbf{u}  + \frac{1}{\rho} \nabla p  = 0}
+#+BEAMER: \mymath{\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u} - \nu \nabla^2 \mathbf{u}  + \frac{1}{\rho} \nabla p  = 0}
+*** COMMENT Change existing lowkey block: grey to light blue
+*** COMMENT Useful Feature: Auto-insertion
+\printallderivations
+* COMMENT Index
+*** German Words
+:PROPERTIES:
+:BEAMER_opt: allowframebreaks
+:END:
+
+    \printindex
+
+* COMMENT 11.21 New Feature/Functions:
+*** Line Wrapping: Wrap at Window Edge
+- Choose the "Saved Options" in the drop down menu.
+- type ~truncated~ in the search bar
+- Select the ~Org Startup Truncated~ and toggle the option.
+- Save the option and re-open the org.
+- Lines will wrap at window edge.
+*** Line Wrapping: Word Wrap (Visual Line Mode)
+- Add the following code to the initial file
+#+begin_src lisp
+  ;; Enable visual-line-mode for Org-mode
+  (add-hook 'org-mode-hook #'visual-line-mode)
+#+end_src
+- Restart org and now the lines will not wrap at word. (Soft Mode)
+*** Shortcut for Inserting Underline
+:PROPERTIES:
+:BEAMER_opt: allowframebreaks
+:END:
+#+begin_src lisp
+  (defun org-toggle-uline ()
+  "Toggle bold on the active region or the current word.
+If a region is active, toggle bold by adding/removing `_` around the region.
+If no region is active, toggle bold on the word at point by adding/removing `_` around it."
+  (interactive)
+  (if (use-region-p)
+      ;; Case 1: Active region
+      (let ((beg (region-beginning))
+            (end (region-end)))
+        (save-excursion
+          (let ((text (buffer-substring-no-properties beg end)))
+            (if (and (string-prefix-p "_" text)
+                     (string-suffix-p "_" text))
+                ;; If text is already underlined, remove the asterisks
+                (progn
+                  (goto-char end)
+                  (delete-char -1) ; Remove trailing `_`
+                  (goto-char beg)
+                  (delete-char 1)) ; Remove leading `_`
+              ;; Else, add asterisks to make it bold
+              (goto-char end)
+              (insert "_")
+              (goto-char beg)
+              (insert "_")))))
+    ;; Case 2: No active region
+    (let ((bounds (bounds-of-thing-at-point 'word)))
+      (if bounds
+          (let* ((beg (car bounds))
+                 (end (cdr bounds))
+                 (char-before-word (char-before beg))
+                 (char-after-word (char-after end)))
+            (save-excursion
+              (if (and char-before-word
+                       char-after-word
+                       (char-equal char-before-word ?_)
+                       (char-equal char-after-word ?_))
+                  ;; If word is already underlined, remove the `_`
+                  (progn
+                    (goto-char end)
+                    (forward-char 1) ; Move to the character after the trailing `_`
+                    (delete-char -1) ; Remove trailing `_`
+                    (goto-char beg)
+                    (delete-char -1)) ; Remove leading `_`
+                ;; Else, add asterisks to make it bold
+                (goto-char end)
+                (insert "_")
+                (goto-char beg)
+                (insert "_"))))
+        (message "No word found at point.")))))
+(with-eval-after-load 'org
+  (define-key org-mode-map [f5] 'org-toggle-uline))
+#+end_src
+- The function will automatically detect the underline for a word or for the active region.
+- Press F5 to add underline to the word where your cursor is on or the active region you selected. 
+This can be inserted as an index.
+*** Local ~configuration.org~ file
+- A new local file named ~configuration.org~ is need and github will not track this file.
+- It should have the following arguments:
+  #+begin_src
+# ----------TAG----------- #
+#+SELECT_TAGS: en
+# +SELECT_TAGS: de B_noteNH B_note
+# +EXCLUDE_TAGS: exclude
+
+# -------Student Mode and Whether to Show Notes------ #
+#+LATEX_HEADER: \setboolean{studentmode}{false}
+
+#+LATEX_HEADER: \setbeameroption{show notes}
+# +LATEX_HEADER: \setbeameroption{hide notes}
+
+  #+end_src
+
+- The first option controls how which slides you want to output.
+- The second option controls if the student mode is activatied or not
+  1. Setting the boolean to *true* will render the eqns invisible and have all the eqns printed out at the end of the slides.
+  2. Setting the boolean to *false* will render the eqns in red and not display eqns at the end of the slides.
+
+*** Test Underline
+
+
+- The first _option_ _controls_ _how_ which _(slides you_ _want to output_.)
+- (The second option controls) if the student mode is activatied or not
+  1. Setting the _boolean_ to *true* will render the _eqns invisible_ and _have all the eqns_ printed "out at the end" of the slides.
+  2. Setting the _boolean_ to *false* will render the eqns in red and not (display) eqns at the end of the slides.
+* COMMENT 11.25 Test
+*** Test 1
+
+Physikalische Analogien bieten eine intuitive _Grundlage_, um mathematische Methoden zu entwerfen und zu verstehen. Solche Analogien helfen in unterschiedlichen Bereichen, von der Optimierung bis hin zur generativen Modellierung. Ein _anschauliches_ Beispiel ist die ADAM-Methode, die physikalische Konzepte wie Impuls und Dämpfung nutzt, um Optimierungsprobleme in hochdimensionalen Räumen effizient zu lösen.
+
+*** Test 2
+
+Der _Impuls_ dient dabei dazu, die Gradientenaktualisierungen zu glätten und einen stabileren Optimierungspfad zu schaffen. Gleichzeitig sorgt die Dämpfung dafür, dass die Schrittweite kontrolliert wird, um ein _Überschießen_ zu vermeiden. Diese Kombination ermöglicht eine schnelle und robuste Konvergenz, selbst in komplexen Modellen mit vielen Parametern.
+
+*** Test 3
+
+
+Durch die Verbindung von physikalischen _Konzepten_ mit mathematischen Verfahren wird die ADAM-Methode zu einem leistungsstarken Werkzeug in der Optimierung und illustriert die Stärke physikalischer Analogien in der Mathematik.
+
+
+*** Test 4
+
+Physikalische Analogien bieten eine intuitive, um mathematische Methoden zu entwerfen und zu verstehen. Solche _Analogien_ helfen in unterschiedlichen Bereichen, von der _Optimierung_ bis hin zur generativen Modellierung. Ein anschauliches Beispiel ist die ADAM-Methode, die physikalische Konzepte wie Impuls und Dämpfung nutzt, um Optimierungsprobleme in hochdimensionalen Räumen effizient zu lösen.
+
+*** Test 5
+
+Der Impuls dient dabei dazu, die Gradientenaktualisierungen zu glätten und einen stabileren Optimierungspfad zu schaffen. Gleichzeitig sorgt die Dämpfung dafür, dass die Schrittweite kontrolliert wird, um ein_ zu vermeiden. Diese Kombination ermöglicht eine schnelle und robuste Konvergenz, selbst in komplexen Modellen mit vielen Parametern.
+
+*** Test 6
+
+
+Durch die Verbindung von physikalischen mit mathematischen Verfahren wird die ADAM-Methode zu einem _leistungssarken_ Werkzeug in der Optimierung und illustriert die Stärke physikalischer Analogien in der Mathematik.
+*** Test 7
+_awdwad,wdaw_
+* COMMENT Indice
+\printallindex
+* Notes Environment Test
+*** Test 0
++ The notes slide usually contains lots of texts.
+*** Test 1
+:PROPERTIES:
+:BEAMER_opt: note
+:END:
++ The notes slide usually contains lots of texts.
++ The font size is set to footnotesize.
++ Everytime after using the note properties, we need to reset the font by setting the following frame property to be default.
+*** Test 2
+:PROPERTIES:
+:BEAMER_opt: reading
+:END:
++ awdawd
+*** Test 3
+:PROPERTIES:
+:BEAMER_opt: default
+:END:
++ The notes slide usually contains lots of texts.
+  awdawdawdawdawdawdaw
+  awdawdawdaw
++ awdawda
+*** Test 4
++ The notes slide usually contains lots of texts.
+  awdawdawdawdawdawdaw
+  awdawdawdaw
++ awdawda
+* COMMENT Chapter 0: Introduction                                    :ignore:                                         
+\subfile{chapter-0-introduction}
+* COMMENT Chapter 1: Probability                                     :ignore:
+\subfile{chapter-1-probability}                               
+* COMMENT Chapter 2:                                                 :ignore:
+\subfile{chapter-2-adjoint-method}
+* COMMENT Chapter 3:                                                 :ignore:
+\subfile{chapter-3-ensemble-method}
+* COMMENT Chapter 4:                                                 :ignore:
+\subfile{chapter-4-auto-differentiation}

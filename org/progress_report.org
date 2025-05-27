@@ -1,0 +1,157 @@
+#+LATEX: \maketitle
+
+
+#+STARTUP: beamer
+#+LaTeX_CLASS: subfiles
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS_OPTIONS: [./main.tex]
+#+OPTIONS: H:3 toc:nil
+#+BEAMER_HEADER: \title[Progress Report]{Progress Report}
+# +SUBTITLE:  Übung 5: Auto Differentiation using Operator Overloading
+# +LATEX_HEADER:\graphicspath{{./figs/chapter-4-auto-differentiation/}}
+#+BEAMER_HEADER: \author[ITLR-DDSim]{Baris Turan}
+#+BEAMER_HEADER: \date{20 May 2025}
+
+#+LATEX_HEADER: \usepackage{pgfpages}
+#+LATEX_HEADER: \usepackage{copyrightbox}
+#+LATEX_HEADER: \setbeameroption{show notes}
+# +LATEX_HEADER: \setbeameroption{hide notes}
+#+LATEX_HEADER: \AtBeginSection[]{\begin{frame}[allowframebreaks]{Outline}\tableofcontents[currentsection]\end{frame}}
+# +SELECT_TAGS: show
+# +EXCLUDE_TAGS: exclude
+ 
+* Diffusion Models
+*** Denoising Diffusion Probabistic Models
+- Forward Process:
+  - Starting from input $\mathbf{x}_0\sim q(\mathbf{x}_0)$, successively add i.i.d. Gaussian noise according to:
+  \begin{equation*}
+  \mathbf{x}_t = \sqrt{1-\beta_t}\mathbf{x}_{t-1}+\sqrt{\beta_t}\mathbf{\epsilon}_t, \text{ }
+  \mathbf{\epsilon}_t\sim\mathcal{N}(0, \mathbf{I})
+  \end{equation*}
+    for $t=1,2, \ldots,T$
+  - Train neural network (usually UNet) to predict $\mathbf{\epsilon}_t$ at a given timestep $t$ given noisy image $\mathbf{x}_t$.
+  - Minimize 
+  \begin{equation*}
+	L=\left \lVert \epsilon - \epsilon_\theta(x_t, t)\right \rVert^2
+  \end{equation*}
+*** Denoising Diffusion Probabilistic Models
+- Backward Process:
+  - Use the trained neural network to estimate $q(\mathbf{x}_{t-1}|\mathbf{x}_t)$
+  - Starting from $x_{T}\sim\mathcal{N}(0, \mathbf{I})$, successively denoise 
+  the image as
+  \begin{equation*}
+	x_{t-1}=\frac{1}{\sqrt{\alpha_t}}\left(\mathbf{x}_t-\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\right)+\sqrt{\beta_t}\mathbf{\epsilon}, 
+        \text{ } \mathbf{\epsilon}\sim\mathcal{N}(0, \mathbf{I})
+  \end{equation*}
+*** Conditional vs. Unconditional Models
+- So far, we have been trying to estimate $q(\mathbf{x}_0)$
+- For real life applications, we want $q(\mathbf{x}_0|y)$
+- In image generation, y can be text, semantic map, a different image etc.
+- For flow problems:
+  - Boundary conditions
+  - Sparse measurements
+  - Information from governing equations
+  - ...
+*** Example: DiffDA
+- Weather-scale data assimilation framework 
+- Conditioned on sparse observations and predictions of a forecast model
+- Conditioning for sparse observations implemented by soft-masking  
+#+ATTR_LATEX: :options {width=\textwidth,totalheight=0.6\paperheight,keepaspectratio,center} 
+#+begin_adjustbox
+#+LATEX: \includegraphics[width=\textwidth]{./figs/diffda.png}
+#+end_adjustbox
+*** Übung on Unconditional Diffusion Model 
+- 2D homogeneous isotropic turbulence on 256x256 grid. 
+- UNet architecture
+- Trained it on Google Colab for around 300 epochs
+#+ATTR_LATEX: :options {width=\textwidth,totalheight=0.6\paperheight,keepaspectratio,center} 
+#+begin_adjustbox
+#+LATEX: \includegraphics[width=\textwidth]{./figs/Kolmogorov3.png}
+#+end_adjustbox
+*** Übung on Conditional Diffusion Model
+- Uses measurements in a random 50x50 region as condition. 
+- Condition, timestep and noisy data are concatenated.  
+- I used the pretrained model this time.
+#+ATTR_LATEX: :options {width=\textwidth,totalheight=0.6\paperheight,keepaspectratio,center} 
+#+begin_adjustbox
+#+LATEX: \includegraphics[width=\textwidth]{./figs/generated_image_5.png}
+#+end_adjustbox
+* Stochastic Differential Equations
+*** SDEs 
+- Describe the time evolution of stochastic processes
+- General form is given by
+\begin{equation*}
+d\mathb{x}_t=\underbrace{\mathbf{\mu}(\mathbf{x}_t, t)dt}_{\text{Deterministic Part}}+\underbrace{\mathbf{\sigma}(\mathbf{x}_t, t)d\mathbf{w}_t}_{\text{Probabilistic Part}}.
+\end{equation*}
+- $\mathbf{\mu}(\mathbf{x}_t, t)dt$: drift term
+- $\mathbf{\sigma}(\mathbf{x}_t, t)$: diffusion term 
+- Equivalent to PDE for the probability distribution (Fokker-Planck-Kolmogorov Equation):
+\begin{equation*}
+\frac{\partial}{\partial t}p(\mathbf{x}, t)=-\frac{\partial}{\partial x}\left[\mathbf{\mu}(\mathbf{x},t)p(\mathbf{x},t)\right]+\frac{\partial^2}{\partial\mathbf{x}^2}\left[\frac{1}{2}\mathbf{\sigma
+}\mathbf{\sigma}^Tp(\mathbf{x},t)\right]
+\end{equation*}
+*** Diffusion Models as SDEs
+- SDE for forward diffusion:
+\begin{equation*}
+d\mathbf{x}=-\frac{1}{2}\beta_t\mathbf{x}dt+\sqrt{\beta_t}d\mathbf{w}
+\end{equation*}
+- SDE for backward diffusion:
+\begin{equation*}
+d\mathbf{x}=\left[-\frac{\beta_t}{2}-\beta_t\nabla_\mathbf{x} \log p(\mathbf{x})\right] + \sqrt{\beta_t}d\mathbf{w}
+\end{equation*}
+- $s=\log p(\mathbf{x})$ is the score function. 
+- *Score based diffusion models* estimate the score function.
+- The SDE is then solved numerically using Euler-Maruyama integration
+* Variational Autoencoders (VAE)
+*** Autoencoder
+- A network aiming to reconstruct the input
+  - Enconder: Compresses the input to the latent space
+  - Decoder: Reconstructs input from the latent space representation. 
+- Can be used for feature extraction
+- Decoder can potentially act as a generative model.
+#+ATTR_LATEX: :options {width=\textwidth,totalheight=0.6\paperheight,keepaspectratio,center} 
+#+begin_adjustbox
+#+LATEX: \includegraphics[width=\textwidth]{./figs/autoencoder.png}
+#+end_adjustbox
+*** VAE                                      
+- Encoder maps input $\mathbf{x}$ to a probability distribution $p(\matbf{x}|\mathbf{z})$
+- Decoder samples from this distribution and reconstructs the input
+- In addition to the usual L1 or L2 reconstruction loss, the loss function includes a KL divergenece term to make the distribution similar to $\mathcal{N}(0, \mathbf{I})$ 
+- Latent space is more centered and regularized, so better for generative tasks than vanilla AE.
+**** AE Latent                                                        :BMCOL:
+     :PROPERTIES:
+     :BEAMER_col: 0.5
+     :END:
+#+ATTR_LATEX: :options {width=\textwidth,totalheight=0.6\paperheight,keepaspectratio,center} 
+#+begin_adjustbox
+#+LATEX: \includegraphics[width=\textwidth]{./figs/AE_Latent_Space.png}
+#+end_adjustbox
+
+**** VAE Latent                                                       :BMCOL:
+     :PROPERTIES:
+     :BEAMER_col: 0.5
+     :END:
+#+ATTR_LATEX: :options {width=\textwidth,totalheight=0.6\paperheight,keepaspectratio,center} 
+#+begin_adjustbox
+#+LATEX: \includegraphics[width=\textwidth]{./figs/VAE_Latent_Space.png}
+#+end_adjustbox
+
+* Stable Diffusion
+*** Stable Diffusion
+- Uses a VAE to compress the data into latent space
+- Diffusion is carried out in latent space to reduce computational costs
+- Uses attention for conditionin. 
+#+ATTR_LATEX: :options {width=\textwidth,totalheight=0.6\paperheight,keepaspectratio,center} 
+#+begin_adjustbox
+#+LATEX: \includegraphics[width=\textwidth]{./figs/stable_diffusion.png}
+#+end_adjustbox
+* Summary
+*** Summary
+- I have read about diffusion models, SDEs, VAEs 
+- I have done the Übungs on diffusion models
+
+* Plan for This Week
+*** Plan for This Week
+- Read Hao's windfarm proposal 
+- Work on conditioning based on energy spectrum, two-point correlation
+- Help Fabian with the urban heat island problem

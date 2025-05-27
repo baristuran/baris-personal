@@ -1,0 +1,456 @@
+% Created 2025-05-19 Pzt 21:40
+% Intended LaTeX compiler: pdflatex
+\documentclass[beamer, aspectratio=1610]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\graphicspath{{./figs/chapter-0-introduction}{./figs/chapter-1-turbulence}{./figs/chapter-2-rans}{./figs/chapter-3-turbulence-modeling}}
+\AtBeginDocument{%
+\setlength{\abovedisplayskip}{6pt}%
+\setlength{\belowdisplayskip}{6pt}%
+\setlength{\abovedisplayshortskip}{6pt}%
+\setlength{\belowdisplayshortskip}{6pt}%
+}
+\renewcommand{\UrlFont}{\color{cyan}} % Set URL font color to cyan
+\usepackage{adjustbox}
+\usepackage{bm}
+\usepackage{subfiles}
+\usepackage{etoolbox}
+\usepackage{listings}
+\usepackage{copyrightbox}
+\makeatletter
+\renewcommand{\CRB@setcopyrightfont}{\tiny\color{gray}}
+\makeatother
+\newcommand{\todayslecture}[1]{%
+\centering
+\bigskip
+\LARGE #1
+}
+\newcommand{\keyterm}[1]{\textbf{#1}}
+\addtobeamertemplate{footnote}{}{\vspace{0.3ex}}
+\addtobeamertemplate{footnote}{\hskip -1.5em}{}
+\setbeamertemplate{blocks}[rounded][shadow]
+\setbeamercolor{block title}{fg=white,bg=uniSlightblue!95}
+\setbeamercolor{block body}{fg=black,bg=uniSlightblue!10}
+\setbeamercolor{block title example}{fg=white,bg=uniSgreen!65!black}
+\setbeamercolor{block body example}{fg=black,bg=uniSgreen!10}
+\setbeamercolor{block title  alerted}{fg=white,bg=uniSred}
+\setbeamercolor{block body alerted}{fg=black,bg=uniSred!10}
+\setbeamercolor{palette primary}{bg=uniSgray!20,fg=uniSgray}
+\setbeamercolor{palette secondary}{bg=uniSblue,fg=white}
+\setbeamercolor{palette tertiary}{fg=white}
+\setbeamercolor{palette quaternary}{fg=uniSblue}
+\setbeamercolor{title}{fg=uniSblue,bg=uniSgray!20}
+\setbeamercolor{frametitle}{fg=uniSblue}
+\setbeamercolor{titlelike}{parent=palette quaternary}
+\usepackage[citestyle=authoryear-icomp, bibstyle=authoryear, backend=biber]{biblatex}
+\bibliography{ref.bib}
+\usepackage{fontawesome}
+\renewcommand{\thefootnote}{\faBook}
+\renewcommand{\footnotesize}{\scriptsize}
+% Define citation color
+\definecolor{myCitationColor}{RGB}{0, 102, 204}
+% Redefine the \cite command for biblatex
+\renewcommand{\cite}[1]{\textcolor{myCitationColor}{\parencite{#1}}}
+\newcommand{\copyrightnotice}[1]{%
+\begin{tikzpicture}[remember picture,overlay]%
+\node[anchor=south west, inner sep=0.1cm, text=gray, xshift=2cm] at (current page.south west) {%
+{\tiny \textcopyright{} #1}%
+};%
+\end{tikzpicture}%
+}
+\newcommand{\copyrightnoticecons}{\copyrightnotice{Type in the repeated content here.}
+}
+\newcommand{\demoslide}{\begin{tikzpicture}[remember picture, overlay]\node[right=0.075\textwidth,above] at (current page.south west) {    \includegraphics[width=0.15\textwidth]{logos/demo.png}};\end{tikzpicture}}
+\newcommand{\readingslide}{\begin{tikzpicture}[remember picture, overlay]\node[right=0.075\textwidth,above] at (current page.south west) {    \includegraphics[width=0.15\textwidth]{logos/reading.png}};\end{tikzpicture}}
+\newcommand{\reviewslide}{\begin{tikzpicture}[remember picture, overlay]\node[right=0.075\textwidth,above] at (current page.south west) {    \includegraphics[width=0.15\textwidth]{logos/review.png}};\end{tikzpicture}}
+\defbeamertemplate*{background canvas}{reading}{%
+\begin{tikzpicture}[remember picture,overlay]%
+\fill[gray!20] (current page.south west) rectangle (current page.north east);%
+\end{tikzpicture}%
+}
+\defbeamertemplate*{background canvas}{review}{%
+\begin{tikzpicture}[remember picture,overlay]%
+\fill[green!10] (current page.south west) rectangle (current page.north east);%
+\end{tikzpicture}%
+}
+\defbeamertemplate*{background canvas}{mydefault}
+{%
+\ifbeamercolorempty[bg]{background canvas}{}{\color{bg}\vrule width\paperwidth height\paperheight}% copied beamer default here
+}
+\BeforeBeginEnvironment{frame}{%
+\setbeamertemplate{background canvas}[mydefault]%
+\setbeamertemplate{sidebar canvas left}[vertical shading][top=uniSlightblue!90,bottom=uniSblue!75]
+}
+\makeatletter
+\define@key{beamerframe}{reading}[true]{%
+\setbeamertemplate{background canvas}[reading]%
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}%
+\setbeamertemplate{sidebar canvas left}{%
+\begin{tikzpicture}[remember picture,overlay]%
+\shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+\node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.15\textwidth]{logos/reading.png}};%
+\end{tikzpicture}}%
+}
+\define@key{beamerframe}{review}[true]{%
+\setbeamertemplate{background canvas}[review]%
+\setbeamertemplate{sidebar canvas left}{%
+\begin{tikzpicture}[remember picture,overlay]%
+\shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+\node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.1\textwidth]{logos/review.png}};%
+\end{tikzpicture}}%
+}
+\define@key{beamerframe}{note}[true]{%
+\setbeamertemplate{sidebar canvas left}{%
+\begin{tikzpicture}[remember picture,overlay]%
+\shade[top color=uniSlightblue!90, bottom color=uniSblue!75] (current page.south west) rectangle (\beamer@sidebarwidth,1);%
+\node[xshift=0.075\textwidth,above] at (current page.south west) {\includegraphics[width=0.16\textwidth]{logos/notes.png}};%
+\end{tikzpicture}}%
+\setbeamerfont{itemize/enumerate body}{size=\footnotesize}%
+}
+\define@key{beamerframe}{default}[true]{%
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}%
+}
+\makeatother
+\usepackage{amsmath} % Only if not already included
+\newcommand{\puteqn}[1]{%
+\foreach \i in {1,...,#1} {%
+\[\textcolor{gray}{\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u} - \nu \nabla^2 \mathbf{u}  + \frac{1}{\rho} \nabla p  = 0 }\]%
+}%
+}
+\newcommand{\putfig}[2][0.5\textwidth]{\fbox{\parbox[c][#1][c]{#2}{\vfill \centering \textcolor{gray}{Figure Placeholder}}}}
+\newcommand{\putfigcap}[3][0.5\textwidth]{\fbox{\parbox[c][#1][c]{#2}{\vfill \centering \textcolor{gray}{#3}}}}
+\usepackage{tikz}
+\newcommand{\content}[1]{%
+\begin{tikzpicture}[remember picture,overlay]%
+\node at (current page.north) [yshift=-1.5cm]{\color{gray}\shortstack{#1}};%
+\end{tikzpicture}%
+}
+\usepackage{tcolorbox}
+\newcommand{\drawbox}[2]{%
+\begin{tcolorbox}[%
+width=\textwidth,          % Adjust width as needed
+height= #2,                % Adjust height as needed
+colframe=uniSlightblue,    % Frame color
+colback=white,             % Background color
+boxrule=0.5pt,             % Thickness of the frame
+sharp corners,             % Sharp corners
+valign=top,                % Vertical alignment: top
+halign=left,               % Horizontal alignment: left
+boxsep=0pt,                % No separation between frame and content
+left=5pt,                  % Minimal left padding
+right=5pt,                 % Minimal right padding
+top=5pt,                   % Minimal top padding
+bottom=5pt
+]%
+\textcolor{gray}{#1}%
+\end{tcolorbox}
+}
+\newcommand{\eqnbox}[1]{%
+\begin{tcolorbox}[%
+width=\textwidth,          % Adjust width as needed
+colframe=uniSlightblue,    % Frame color
+colback=white,             % Background color
+boxrule=0.5pt,             % Thickness of the frame
+rounded corners,             % Sharp corners
+colbacktitle=uniSlightblue!30, % Title background color
+valign=top,                % Vertical alignment: top
+halign=center,               % Horizontal alignment: left
+boxsep=3pt,                % No separation between frame and content
+left=1pt,                  % Minimal left padding
+right=5pt,                 % Minimal right padding
+top=0pt,                   % Minimal top padding
+bottom=2pt
+]%
+\begin{gather*}%
+#1%
+\end{gather*}%
+\end{tcolorbox}
+}
+\usepackage{ifthen}
+\newboolean{studentmode}
+\setboolean{studentmode}{false}
+\setbeamertemplate{theorems}[numbered]
+\newtheorem{derivation}{D} % for derivation
+\newtheorem{iderivation}{D} % for invisible derivation
+\newtheorem{printderivation}{Derivation}
+\AtBeginEnvironment{printderivation}{%
+\setbeamertemplate{blocks}[sharp]
+\setbeamercolor{block title}{bg=uniSgray!40, fg=white}
+\setbeamercolor{block body}{bg=white, fg=black}
+}
+\AtBeginEnvironment{derivation}{%
+\setbeamertemplate{blocks}[sharp]
+\setbeamercolor{block title}{bg=white, fg=uniSgray!50}
+\setbeamercolor{block body}{bg=white, fg=uniSred!100}
+}
+\AtBeginEnvironment{iderivation}{%
+\setbeamertemplate{blocks}[sharp]
+\setbeamercolor{block title}{bg=white, fg=uniSgray!50}
+\setbeamercolor{block body}{bg=white, fg=uniSred!0}
+}
+\AtEndEnvironment{printderivation}{%
+\setbeamertemplate{blocks}[rounded]
+}
+\usepackage{environ}
+\newcounter{derivationcount}
+\newcommand{\storederivation}[1]{%
+\stepcounter{derivationcount}%
+\global\expandafter\let\csname derivation\arabic{derivationcount}\endcsname#1%
+}
+\newcommand{\studentderivation}[1]{%
+\begin{derivation}%
+#1%
+\end{derivation}%
+}
+\NewEnviron{student}{%
+\studentderivation{\BODY}%
+\storederivation{\BODY}%
+}
+\usepackage{pgffor}
+\ifthenelse{\boolean{studentmode}}{
+\renewcommand{\studentderivation}[1]{%
+\begin{iderivation}%
+#1%
+\end{iderivation}%
+}
+\ifcsname printallderivations\endcsname
+% If \printallderivation is defined, renew it
+\renewcommand{\printallderivations}{%
+\begin{frame}[allowframebreaks]{Derivations}%
+\foreach \i in {1,...,\arabic{derivationcount}} {%
+\begin{printderivation}%
+\csname derivation\i\endcsname%
+\end{printderivation}%
+\vspace{1em} % Space between derivations
+}%
+\end{frame}%
+}
+\else
+% If \printallderivation is not defined, define it
+\newcommand{\printallderivations}{%
+\begin{frame}[allowframebreaks]{Derivations}%
+\foreach \i in {1,...,\arabic{derivationcount}} {%
+\begin{printderivation}%
+\csname derivation\i\endcsname%
+\end{printderivation}%
+\vspace{1em} % Space between derivations
+}%
+\end{frame}%
+}
+\fi
+}{
+\ifcsname printallderivations\endcsname
+\renewcommand{\printallderivations}{%
+}
+\else
+\newcommand{\printallderivations}{%
+}
+\fi
+\renewcommand{\studentderivation}[1]{%
+\begin{derivation}%
+#1%
+\end{derivation}%
+}
+}
+\usepackage{makeidx}
+\makeindex
+\newenvironment{theindex}
+{\let\item\par
+%definitions for subitem etc
+}{}
+\newcommand\indexspace{}
+\newcommand{\hyperlinkblue}[2]{\hyperlink{#1}{\textcolor{uniSblue}{#2}}}
+\newcommand{\Indexed}[1]{\index{#1|hyperlinkblue{index:#1}}\hypertarget{index:#1}{\textcolor{uniSblue}{#1}}}
+\newcommand{\printallindex}{%
+\begin{frame}[allowframebreaks]{German Words}%
+\printindex
+\end{frame}%
+}
+\newcommand{\Var}{\mathbb{V}\mathrm{ar}}
+\newcommand{\Cov}{\mathbb{C}\mathrm{ov}}
+\newcommand{\Ex}{\mathbb{E}}
+\newcommand{\bbdrawing}[1]{\tikz\draw (0,0)  rectangle (0.99\textwidth,#1\textheight);}
+\newcommand{\bbdrawingtx}[2]{%
+\protect#2:\\
+\tikz\draw (0,0) rectangle (0.99\textwidth,#1\textheight);}
+\newcommand{\reynoldstress}{\boldsymbol{\tau}}
+\newcommand{\bu}{\mathbf{u}}
+\usepackage{empheq}
+\usepackage{esint}
+\usepackage{tikzsymbols}
+\usepackage{cancel}
+\usetheme[hideothersubsections, left]{Marburg}
+\author{ITLR DDSim}
+\date{\today}
+\title{This is not the actual title for a beamer slides But you can't leave the fake title empty.}
+\title[Turbulent Flow Simulations with Physical and Data-Driven Methods]{Turbulent Flow Simulations with Physical and Data-Driven Methods}
+\author[ITLR-DDSim]{Prof. Dr. Heng Xiao}
+\date{Summer Semester, 2025}
+\institute[University of Stuttgart]{Chair of Data-Driven Fluid Dynamics (ITLR-DDSim) \\ Institut für Thermodynamik der Luft- und Raumfahrt \\ Universität Stuttgart}
+\titlegraphic{\includegraphics[height=.15\paperheight,keepaspectratio]{./logos/simtech-itlr-unistr.jpg}}
+\usecolortheme{beaver}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+\definecolor{uniSblue}{RGB}{0,65,145}
+\definecolor{uniSlightblue}{RGB}{0,190,255}
+\definecolor{uniSgray}{RGB}{62, 68, 76}
+\definecolor{uniSyellow}{RGB}{255, 213, 0}
+\definecolor{uniSred}{RGB}{230, 0, 50}
+\definecolor{uniSgreen}{RGB}{0, 200, 50}
+\makeatletter
+\setbeamertemplate{sidebar canvas \beamer@sidebarside}[vertical shading][top=uniSlightblue!90,bottom=uniSblue!75]
+\makeatother
+\setbeamercolor{palette sidebar secondary}{fg=black}
+\setbeamercolor{section in sidebar shaded}{fg=uniSgray!85}
+\setbeamercolor{subsection in sidebar shaded}{fg=uniSgray}
+\setbeamercolor{subsection in sidebar}{fg=uniSblue}
+\setbeamerfont{section in sidebar}{series=\bfseries}
+\setbeamerfont{subsection in sidebar shaded}{series=\bfseries}
+\makeatletter
+\newcommand{\setnextsection}[1]{%
+\setcounter{section}{\numexpr#1-1\relax}%
+\beamer@tocsectionnumber=\numexpr#1-1\relax\space}
+\makeatother
+\newenvironment <>{lowkey}[1]{%
+\begin{actionenv}#2%
+\def\insertblocktitle{#1}%
+\par%
+\setbeamercolor{block title}{fg=uniSblue,bg=uniSgray!15}
+\setbeamercolor{block body}{bg=uniSgray!5}
+\usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+\newenvironment<>{plain}[1]{%
+\begin{actionenv}#2%
+\def\insertblocktitle{#1}%
+\par%
+\setbeamercolor{block title}{fg=uniSblue,bg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+\newenvironment<>{bold}[1]{%
+\begin{actionenv}#2%
+\def\insertblocktitle{\textbf{#1}}%
+\par%
+\setbeamercolor{block title}{fg=uniSblue,bg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+\hypersetup{
+ pdfauthor={ITLR DDSim},
+ pdftitle={This is not the actual title for a beamer slides But you can't leave the fake title empty.},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.1 (Org mode 9.3)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+
+\section{Configuration\hfill{}\textsc{ignore}}
+\label{sec:org9620cdd}
+\subsection{Loaded Packages\hfill{}\textsc{ignore}}
+\label{sec:org61759ab}
+\subsection{New Commands \& Options\hfill{}\textsc{ignore}}
+\label{sec:orge8ab601}
+
+\subsection{Stuttgart Theme Setup\hfill{}\textsc{ignore}}
+\label{sec:org7c4d1f2}
+
+
+\begin{frame}[label={sec:orgb18aafc}]{Shades for blocks in Stuttgart Theme}
+\end{frame}
+\subsection{Add Extra Block Types\hfill{}\textsc{ignore}}
+\label{sec:org9c8d2c4}
+
+\subsection{Bibliography Settings\hfill{}\textsc{ignore}}
+\label{sec:org0ee1890}
+\subsection{Utilities for Teaching\hfill{}\textsc{ignore}}
+\label{sec:org98cd20b}
+\begin{frame}[label={sec:orgf2b477a}]{Add Copyright Box for a Frame}
+\end{frame}
+\begin{frame}[label={sec:orga9f635b}]{Adding Indicator Icons}
+\end{frame}
+\begin{frame}[label={sec:org33a9bef}]{Change Background of a Frame}
+\end{frame}
+\begin{frame}[label={sec:org15ad891}]{Add Placeholder for Eqns}
+
+\end{frame}
+
+\begin{frame}[label={sec:org6893084}]{Add Placeholder for Figure}
+\end{frame}
+\begin{frame}[label={sec:org3afd4fb}]{Add Float Content}
+
+\end{frame}
+
+\begin{frame}[label={sec:org0611cc5}]{Placeholder Box for Lecturing}
+
+\end{frame}
+
+\begin{frame}[label={sec:orgf3922ec}]{Add Box for Previous Equations}
+\end{frame}
+\begin{frame}[label={sec:orgbe83eed}]{Add Box for Previous Equations}
+\end{frame}
+\begin{frame}[label={sec:org9dd9c8a}]{Add Student Mode}
+\end{frame}
+\begin{frame}[label={sec:orga2f6616}]{New: Add Student Blocks for Hiding Contents}
+
+\end{frame}
+
+\begin{frame}[label={sec:org93c51a0}]{Add Index Support for Beamer}
+
+\end{frame}
+
+\subsection{Chapter 1\hfill{}\textsc{ignore}}
+\label{sec:org8ee8bab}
+\subsection{Chapter 2\hfill{}\textsc{ignore}}
+\label{sec:orgb4cb94b}
+\section{Notes Environment Test}
+\label{sec:orgf2e7da2}
+\begin{frame}[label={sec:org2e04aaf}]{Test 0}
+\begin{itemize}
+\item The notes slide usually contains lots of texts.
+\end{itemize}
+\end{frame}
+\begin{frame}[label={sec:org2f0d491},note]{Test 1}
+\begin{itemize}
+\item The notes slide usually contains lots of texts.
+\item The font size is set to footnotesize.
+\item Everytime after using the note properties, we need to reset the font by setting the following frame property to be default.
+\end{itemize}
+\end{frame}
+\begin{frame}[label={sec:orgf9a7c69},reading]{Test 2}
+\begin{itemize}
+\item awdawd
+\end{itemize}
+\end{frame}
+\begin{frame}[label={sec:org50a0eb7},default]{Test 3}
+\begin{itemize}
+\item The notes slide usually contains lots of texts.
+awdawdawdawdawdawdaw
+awdawdawdaw
+\item awdawda
+\end{itemize}
+\end{frame}
+\begin{frame}[label={sec:orge2ff0eb}]{Test 4}
+\begin{itemize}
+\item The notes slide usually contains lots of texts.
+awdawdawdawdawdawdaw
+awdawdawdaw
+\item awdawda
+\end{itemize}
+\end{frame}
+\end{document}
