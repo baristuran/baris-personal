@@ -2,7 +2,7 @@ import numpy as np
 from numpy.fft import fftn
 from numpy import sqrt, zeros, conj, pi, arange
 
-def compute_tke_spectrum(u,v,lx,ly,smooth):
+def compute_tke_spectrum(u,lx,ly,smooth=False):
   """
   Given a velocity field u, v, w, this function computes the kinetic energy
   spectrum of that velocity field in spectral space. This procedure consists of the 
@@ -32,17 +32,16 @@ def compute_tke_spectrum(u,v,lx,ly,smooth):
   smooth: boolean
     A boolean to smooth the computed spectrum for nice visualization.
   """
-  nx = len(u[:,0,0])
-  ny = len(v[0,:,0])
+  nx = len(u[:,0])
+  ny = len(u[0,:])
   
   nt= nx*ny
   n = nx #int(np.round(np.power(nt,1.0/3.0)))
   
   uh = fftn(u)/nt
-  vh = fftn(v)/nt
   
   tkeh = zeros((nx,ny))
-  tkeh = 0.5*(uh*conj(uh) + vh*conj(vh)).real
+  tkeh = (uh*conj(uh)).real
   
   k0x = 2.0*pi/lx
   k0y = 2.0*pi/ly
@@ -64,9 +63,9 @@ def compute_tke_spectrum(u,v,lx,ly,smooth):
       rky = ky
       if (ky>kymax):
         rky=rky - (ny)
-        rk = sqrt(rkx*rkx + rky*rky)
-        k = int(np.round(rk))
-        tke_spectrum[k] = tke_spectrum[k] + tkeh[kx,ky]
+      rk = sqrt(rkx*rkx + rky*rky)
+      k = int(np.round(rk))
+      tke_spectrum[k] = tke_spectrum[k] + tkeh[kx,ky]
 
   tke_spectrum = tke_spectrum/knorm
   #  tke_spectrum = tke_spectrum[1:]
