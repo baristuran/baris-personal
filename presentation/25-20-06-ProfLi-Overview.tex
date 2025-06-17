@@ -1,0 +1,395 @@
+% Created 2025-06-17 Tue 20:13
+% Intended LaTeX compiler: pdflatex
+\documentclass[beamer, aspectratio=1610]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{animate}
+\newcommand{\cvtime}[1]{\hfill \textsf{(#1)}}
+\usepackage{tikz}
+\usepackage{tikzsymbols}
+\usetikzlibrary{decorations.pathmorphing}
+\tikzset{zigzag/.style={decorate,decoration=zigzag}}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{adjustbox}
+\adjustboxset{width=0.99\textwidth,center,keepaspectratio}
+\setbeamerfont{footnote}{size=\scriptsize}
+\newcommand{\trimeqspace}{\vspace{-1.5em}}
+\newcommand{\trimeqspacehalf}{\vspace{-0.75em}}
+\usepackage{appendixnumberbeamer}
+\usepackage{copyrightbox}
+\makeatletter
+\renewcommand{\CRB@setcopyrightfont}{\tiny\color{gray}}
+\makeatother
+\AtBeginDocument{%
+\setlength{\abovedisplayskip}{6pt}%
+\setlength{\belowdisplayskip}{6pt}%
+\setlength{\abovedisplayshortskip}{6pt}%
+\setlength{\belowdisplayshortskip}{6pt}%
+}
+\usepackage[backend=biber, style=verbose, giveninits=true, maxnames=99]{biblatex}
+\bibliography{ref.bib}
+\DeclareDelimFormat{nametitledelim}{\addspace}
+\DeclareFieldFormat[article]{pages}{#1}
+\DeclareBibliographyDriver{article}{%
+\usebibmacro{bibindex}%
+\usebibmacro{begentry}%
+\usebibmacro{author/translator+others}%
+\setunit{\addspace}\newblock
+\printtext[parens]{\printfield{year}}%
+\newunit\newblock
+\usebibmacro{title}%
+\newunit
+\printfield{journaltitle}%
+\setunit*{\addcomma\space}%
+\printfield{volume}%
+\setunit*{\addcomma\space}%
+\printfield{pages}%
+\newunit\newblock
+\usebibmacro{finentry}}
+\usepackage{fontawesome}
+\renewcommand{\thefootnote}{\faBook}
+\renewcommand{\footnotesize}{\scriptsize}
+\addtobeamertemplate{footnote}{\hskip -1.5em}{}
+\setbeamertemplate{blocks}[rounded][shadow]
+\setbeamercolor{block title}{fg=white,bg=uniSlightblue!95}
+\setbeamercolor{block body}{fg=black,bg=uniSlightblue!10}
+\setbeamercolor{block title example}{fg=white,bg=uniSgreen!65!black}
+\setbeamercolor{block body example}{fg=black,bg=uniSgreen!10}
+\setbeamercolor{block title  alerted}{fg=white,bg=uniSred}
+\setbeamercolor{block body alerted}{fg=black,bg=uniSred!10}
+\setbeamercolor{title}{fg=uniSblue,bg=uniSgray!20}
+\setbeamercolor{frametitle}{fg=uniSblue}
+\setbeamercolor{palette primary}{bg=uniSgray!20,fg=uniSgray}
+\setbeamercolor{palette secondary}{bg=uniSblue,fg=white}
+\setbeamercolor{palette tertiary}{fg=white}
+\setbeamercolor{palette quaternary}{fg=uniSblue}
+\setbeamercolor{titlelike}{parent=palette quaternary}
+\newcommand{\reynoldstress}{\boldsymbol{\tau}}
+\newcommand{\reynoldstresscomp}{\mathsf{\tau}}
+\newcommand{\reynoldstressa}{\boldsymbol{a}}
+\newcommand{\reynoldstressacomp}{\mathsf{a}}
+\newcommand{\reynoldstressb}{\boldsymbol{b}}
+\newcommand{\reynoldstressbcomp}{\mathsf{b}}
+\newcommand{\Tt}{\mathbf{T}}
+\newcommand{\St}{\mathbf{S}}
+\newcommand{\Rt}{\mathbf{R}}
+\newcommand{\Omegat}{\mathbf{\Omega}}
+\newcommand{\It}{\mathbf{I}}
+\newcommand{\Pt}{\boldsymbol{P}}
+\newcommand{\rstt}{\bm{\tau}}
+\newcommand{\bu}{\mathbf{u}}
+\usetheme[left]{Marburg}
+\author{Hao Teng, Baris Turan, Fabian Steinbrenner}
+\date{\today}
+\title{Data-driven Turbulence Prediction with Latent Diffusion Models}
+\title[Data-driven Turbulence Prediction with Latent Diffusion Models]{Data-driven Turbulence Prediction with Latent Diffusion Models}
+\newcommand\tikzmark[1]{\tikz[remember picture,overlay] \node[inner xsep=0pt] (#1) {}; }
+\author[Teng, Turan \\ Steinbrenner, Xiao  \\  ITLR-DDSim]{Hao Teng, Baris Turan, Fabian Steinbrenner, Heng Xiao}
+\institute[Univeristy of Stuttgart]{Institute of Aerospace Thermodynamics \\ Faculty of Aerospace Engineering and Geodesy\\ University of Stuttgart \vspace{0.25em}}
+\titlegraphic{\includegraphics[height=.15\paperheight,keepaspectratio]{logos/simtech-itlr-unistr}}
+\newenvironment<>{lowkey}[1]{%
+\begin{actionenv}#2%
+\def\insertblocktitle{#1}%
+\par%
+\setbeamercolor{block title}{fg=uniSblue,bg=HStone!15}
+\setbeamercolor{block body}{bg=HStone!5}
+\usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+\newenvironment<>{plain}[1]{%
+\begin{actionenv}#2%
+\def\insertblocktitle{#1}%
+\par%
+\setbeamercolor{block title}{fg=uniSblue,bg=white}
+\setbeamercolor{block body}{bg=white}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+\usecolortheme{beaver}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+\definecolor{CMaroon}{RGB}{139,31,65}
+\definecolor{VSunset}{RGB}{247,144,30}
+\definecolor{HStone}{RGB}{109,106,117}
+\definecolor{uniSblue}{RGB}{0,65,145}
+\definecolor{uniSlightblue}{RGB}{0,190,255}
+\definecolor{uniSgray}{RGB}{62, 68, 76}
+\definecolor{uniSyellow}{RGB}{255, 213, 0}
+\definecolor{uniSred}{RGB}{230, 0, 50}
+\definecolor{uniSgreen}{RGB}{0, 200, 50}
+\makeatletter
+\setbeamertemplate{sidebar canvas \beamer@sidebarside}[vertical shading][top=uniSlightblue!90,bottom=uniSblue!75]
+\makeatother
+\setbeamercolor{palette sidebar secondary}{fg=black}
+\setbeamercolor{section in sidebar shaded}{fg=uniSgray!85}
+\setbeamercolor{subsection in sidebar shaded}{fg=uniSgray}
+\setbeamercolor{subsection in sidebar}{fg=uniSblue}
+\setbeamerfont{section in sidebar}{series=\bfseries}
+\setbeamerfont{subsection in sidebar shaded}{series=\bfseries}
+\makeatletter
+\newcommand{\setnextsection}[1]{%
+\setcounter{section}{\numexpr#1-1\relax}%
+\beamer@tocsectionnumber=\numexpr#1-1\relax\space}
+\makeatother
+\hypersetup{
+ pdfauthor={Hao Teng, Baris Turan, Fabian Steinbrenner},
+ pdftitle={Data-driven Turbulence Prediction with Latent Diffusion Models},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.3 (Org mode 9.6.15)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\begin{frame}{Outline}
+\setcounter{tocdepth}{1}
+\tableofcontents
+\end{frame}
+
+
+\section{Configuration\hfill{}\textsc{ignore}}
+\label{sec:org119040f}
+\begin{frame}[label={sec:org0fd9f34}]{Basic}
+
+\end{frame}
+
+
+\begin{frame}[label={sec:org0f069fe}]{Packages \& Setup}
+
+
+
+
+\begin{block}{Customized Citation Format}
+
+\end{block}
+\end{frame}
+
+
+
+\begin{frame}[label={sec:org008a9ca}]{VT Theme Setup}
+
+\begin{block}{Shades for blocks in VT Theme}
+
+\end{block}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgb9a848a}]{Macros \& Utilities}
+
+\end{frame}
+
+
+
+
+
+
+
+
+\section{Motivation}
+\label{sec:orgc6f8a8f}
+
+\begin{frame}[label={sec:org3ea3310}]{Surrogate Modelling}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orge7a6976}]{Limitations of Traditional Models I}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgf13089e}]{Limitations of Traditional Models II}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+
+\section{A Short Introduction to Diffusion Models}
+\label{sec:org2280cb6}
+
+\begin{frame}[label={sec:orgb975cac}]{Diffusion Models: Idea}
+\begin{itemize}
+\item \alert{Forward process (Diffusion process)}: add noise
+\begin{itemize}
+\item Add i.i.d. Gaussian noise to data samples over many steps
+\item Progressively degrade the data into pure noise (prior distribution, often i.i.d. Gaussian)
+\item Explicitly prescribed, no modeling needed
+\end{itemize}
+
+\item \alert{Backward/Reverse process (Denoising process)}: remove noise
+\begin{itemize}
+\item Added noise approximated by a neural network
+\item Recover the original data by gradually removing the noise using neural network, starting from pure noise
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgb356b31}]{Diffusion Models: Overall Architecture}
+\begin{itemize}
+\item Forward Process:
+\begin{itemize}
+\item Given a data sample \(x_0\), each forward step adds a small amount of Gaussian noise:
+\end{itemize}
+\[
+  x_t = \sqrt{1 - \beta_t} x_{t-1} + \sqrt{\beta_t} \epsilon,\quad \epsilon \sim \mathcal{N}(0, I),\ t \in [1, T\bm{x}_t = \sqrt{1 - \beta_t} \bm{x}_{t-1} + \sqrt{\beta_t}
+   \boldsymbol{\epsilon}, \quad \boldsymbol{\epsilon} \sim \mathcal{N}(0, \bm{I}), \ t \in [1,T]
+ \]
+\begin{itemize}
+\item \(\beta_t\): noise schedule, \(\epsilon\): sampled Gaussian noise
+\end{itemize}
+\item Model Training:
+\begin{itemize}
+\item Get \(x_t\) from \(x_0\).
+\item Train a model \(\epsilon_\theta\) to predict the added noise at a specified time step t.
+\item Approximate backwards process using
+\end{itemize}
+\[
+   x_{t-1} = \frac{1}{\sqrt{\alpha_t}} \left( x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \epsilon_\theta(x_t, t) \right) + \sqrt{\beta_t} \epsilon
+  \]
+where \(\alpha_t = 1 - \beta_t,\quad \bar{\alpha}_t = \prod_{i=1}^t \alpha_i\)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgab686e2}]{Diffusion Models: Conditional Diffusion Models}
+\begin{itemize}
+\item \emph{Diffusion model}: learn the probabilistic distribution \(p(\bm{x})\)
+\item \emph{Conditional diffusion model}: learn the conditional probability of \(p(\bm{x}| \bm{y})\)
+\item What \(\bm{y}\) (conditions) can be:
+\begin{itemize}
+\item Class labels, text prompt, attributes, or any conditioning signal \ldots{}
+\end{itemize}
+\item When you ask ChatGPT questions
+\begin{itemize}
+\item You input text \(\bm{y}\).
+\item ChatGPT give you answers by sampling  \(p(\bm{x}| \bm{y})\), either text or images.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgd9de894}]{Conditional Diffusion Models for Flow Field Prediction}
+\begin{itemize}
+\item In fluid dynamics, \(\bm{y}\) (conditions) can be:
+\begin{itemize}
+\item Labels: Reynolds number \ldots{}
+\item Constraints: physical laws
+\item Incomplete information: sparse measurements
+\item Integral information without details: lift, drag
+\end{itemize}
+\item Matches the distribution of the training data, unlike deterministic models.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgea1f652}]{Conditional Diffusion Models for Data Assimilation}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+
+\section{Projects}
+\label{sec:orgffcb831}
+
+\begin{frame}[label={sec:orgfe3498d}]{Generative Prediction of Urban-scale Extreme Events: Project Idea I}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org750d7a4}]{Generative Prediction of Urban-scale Extreme Events: Project Idea II}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org51fbd96}]{Generative Prediction of Urban-scale Extreme Events: Results}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org3d7f860}]{Generative Modeling of Kolmogorov Flow: Kolmogorov Method}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org662a51f}]{Generative Modeling of Kolmogorov Flow: Data Assimilation Method}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgc5be97f}]{Generative Modeling of Kolmogorov Flow: Data Assimilation Results}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orga1f7c43}]{Generative Modeling of Kolmogorov Flow: State Results}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgb5d6008}]{Generative Modeling for Windfarm Prediction: Reduced Order Modeling}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org428b998}]{Generative Modeling for Windfarm Prediction: Neural Network Framework}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orga570ddf}]{Generative Modeling for Windfarm Prediction: Results I}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orga136011}]{Generative Modeling for Windfarm Prediction: Results II}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+
+\section{Summary}
+\label{sec:org6537d1d}
+\begin{frame}[label={sec:org9542c36}]{Summary}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{frame}
+
+
+\appendix
+\begin{frame}[label={sec:orgf0ab222}]{Thank you!}
+\begin{center}
+\alert{Thank you for your attention!}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org29c4560}]{References}
+\printbibliography
+\end{frame}
+\end{document}

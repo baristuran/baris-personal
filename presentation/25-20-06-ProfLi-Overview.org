@@ -1,0 +1,315 @@
+#+STARTUP: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [beamer, aspectratio=1610]
+#+TITLE: Data-driven Turbulence Prediction with Latent Diffusion Models
+#+AUTHOR: Hao Teng, Baris Turan, Fabian Steinbrenner
+
+* Configuration                                                      :ignore:
+:PROPERTIES:
+:VISIBILITY: folded
+:END:
+
+** Basic                                                             :ignore:
+
+#+BEAMER_HEADER: \title[Data-driven Turbulence Prediction with Latent Diffusion Models]{Data-driven Turbulence Prediction with Latent Diffusion Models}
+#+OPTIONS: H:2 toc:1
+
+#+COLUMNS: %45ITEM %10BEAMER_env(Env) %10BEAMER_act(Act) %4BEAMER_col(Col) %8BEAMER_opt(Opt)
+
+#+SELECT_TAGS: current
+# +EXCLUDE_TAGS: current
+
+
+** Packages & Setup                                                 :ignore:
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{animate}
+#+LATEX_HEADER: \newcommand{\cvtime}[1]{\hfill \textsf{(#1)}}
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usepackage{tikzsymbols}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing}
+#+LATEX_HEADER: \tikzset{zigzag/.style={decorate,decoration=zigzag}}
+#+BEAMER_HEADER: \newcommand\tikzmark[1]{\tikz[remember picture,overlay] \node[inner xsep=0pt] (#1) {}; }
+#+LATEX_HEADER: \usepackage{mathtools}
+#+LATEX_HEADER: \usepackage{bm}
+#+LATEX_HEADER: \usepackage{adjustbox}
+#+LATEX_HEADER: \adjustboxset{width=0.99\textwidth,center,keepaspectratio}
+#+LATEX_HEADER: \setbeamerfont{footnote}{size=\scriptsize}
+#+LATEX_HEADER: \newcommand{\trimeqspace}{\vspace{-1.5em}}
+#+LATEX_HEADER: \newcommand{\trimeqspacehalf}{\vspace{-0.75em}}
+#+LATEX_HEADER: \usepackage{appendixnumberbeamer}
+
+#+BEAMER_HEADER: \author[Teng, Turan \\ Steinbrenner, Xiao  \\  ITLR-DDSim]{Hao Teng, Baris Turan, Fabian Steinbrenner, Heng Xiao}
+#+BEAMER_HEADER: \institute[Univeristy of Stuttgart]{Institute of Aerospace Thermodynamics \\ Faculty of Aerospace Engineering and Geodesy\\ University of Stuttgart \vspace{0.25em}}
+#+BEAMER_HEADER: \titlegraphic{\includegraphics[height=.15\paperheight,keepaspectratio]{logos/simtech-itlr-unistr}}
+
+#+LATEX_HEADER: \usepackage{copyrightbox}
+#+LATEX_HEADER: \makeatletter
+#+LATEX_HEADER: \renewcommand{\CRB@setcopyrightfont}{\tiny\color{gray}}
+#+LATEX_HEADER: \makeatother
+
+#+BEAMER_HEADER: \newenvironment<>{lowkey}[1]{%
+#+BEAMER_HEADER:  \begin{actionenv}#2%
+#+BEAMER_HEADER:      \def\insertblocktitle{#1}%
+#+BEAMER_HEADER:      \par%
+#+BEAMER_HEADER:        \setbeamercolor{block title}{fg=uniSblue,bg=HStone!15}
+#+BEAMER_HEADER:        \setbeamercolor{block body}{bg=HStone!5}
+#+BEAMER_HEADER: \usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+
+#+BEAMER_HEADER: \newenvironment<>{plain}[1]{%
+#+BEAMER_HEADER:  \begin{actionenv}#2%
+#+BEAMER_HEADER:      \def\insertblocktitle{#1}%
+#+BEAMER_HEADER:      \par%
+#+BEAMER_HEADER:        \setbeamercolor{block title}{fg=uniSblue,bg=white}
+#+BEAMER_HEADER:        \setbeamercolor{block body}{bg=white}
+#+BEAMER_HEADER:       \setbeamertemplate{blocks}[rounded][shadow=false]
+#+BEAMER_HEADER: \usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+
+# +BEAMER_HEADER: \AtBeginSection[]{\begin{frame}[noframenumbering]{Outline} \tableofcontents[currentsection]  \end{frame}}
+
+# Space around equation
+#+LATEX_HEADER: \AtBeginDocument{%
+#+LATEX_HEADER:   \setlength{\abovedisplayskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\belowdisplayskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\abovedisplayshortskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\belowdisplayshortskip}{6pt}%
+#+LATEX_HEADER: }
+
+
+
+
+*** Customized Citation Format                          :ignore:
+#+LATEX_HEADER: \usepackage[backend=biber, style=verbose, giveninits=true, maxnames=99]{biblatex}
+#+LATEX_HEADER: \bibliography{ref.bib}
+#+LATEX_HEADER: \DeclareDelimFormat{nametitledelim}{\addspace}
+#+LATEX_HEADER: \DeclareFieldFormat[article]{pages}{#1}
+#+LATEX_HEADER: \DeclareBibliographyDriver{article}{%
+#+LATEX_HEADER:   \usebibmacro{bibindex}%
+#+LATEX_HEADER:   \usebibmacro{begentry}%
+#+LATEX_HEADER:   \usebibmacro{author/translator+others}%
+#+LATEX_HEADER:   \setunit{\addspace}\newblock
+#+LATEX_HEADER:   \printtext[parens]{\printfield{year}}%
+#+LATEX_HEADER:   \newunit\newblock
+#+LATEX_HEADER:   \usebibmacro{title}%
+#+LATEX_HEADER:   \newunit
+#+LATEX_HEADER:   \printfield{journaltitle}%
+#+LATEX_HEADER:   \setunit*{\addcomma\space}%
+#+LATEX_HEADER:   \printfield{volume}%
+#+LATEX_HEADER:   \setunit*{\addcomma\space}%
+#+LATEX_HEADER:   \printfield{pages}%
+#+LATEX_HEADER:   \newunit\newblock
+#+LATEX_HEADER:   \usebibmacro{finentry}}
+#+PROPERTY: BIBLIOGRAPHY ref.bib
+
+#+LATEX_HEADER: \usepackage{fontawesome}
+#+LATEX_HEADER: \renewcommand{\thefootnote}{\faBook}
+#+LATEX_HEADER: \renewcommand{\footnotesize}{\scriptsize}
+
+
+
+** VT Theme Setup                                                   :ignore:
+
+#+BEAMER_THEME: [left] Marburg
+#+BEAMER_HEADER:  \usecolortheme{beaver}
+#+BEAMER_HEADER:  \usefonttheme{professionalfonts}  
+#+BEAMER_HEADER:  \setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+#+BEAMER_HEADER: \setbeamertemplate{caption}[numbered]
+#+BEAMER_HEADER: \setbeamertemplate{section in toc}[sections numbered]
+#+BEAMER_HEADER: \setbeamertemplate{subsection in toc}[subsections numbered]
+#+BEAMER_HEADER: \setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+# VT Theme
+#+BEAMER_HEADER: \definecolor{CMaroon}{RGB}{139,31,65}
+#+BEAMER_HEADER: \definecolor{VSunset}{RGB}{247,144,30}
+#+BEAMER_HEADER: \definecolor{HStone}{RGB}{109,106,117}
+
+# see http://www.uni-stuttgart.de/more/corporate_design/cd-dateien/Uni_Stuttgart_CD-Manual_2016_klein.pdf
+#+BEAMER_HEADER: \definecolor{uniSblue}{RGB}{0,65,145}
+#+BEAMER_HEADER: \definecolor{uniSlightblue}{RGB}{0,190,255}
+#+BEAMER_HEADER: \definecolor{uniSgray}{RGB}{62, 68, 76}
+#+BEAMER_HEADER: \definecolor{uniSyellow}{RGB}{255, 213, 0}
+#+BEAMER_HEADER: \definecolor{uniSred}{RGB}{230, 0, 50}
+#+BEAMER_HEADER: \definecolor{uniSgreen}{RGB}{0, 200, 50}
+
+#+BEAMER_HEADER: \makeatletter
+#+BEAMER_HEADER: \setbeamertemplate{sidebar canvas \beamer@sidebarside}[vertical shading][top=uniSlightblue!90,bottom=uniSblue!75]
+#+BEAMER_HEADER: \makeatother
+#+BEAMER_HEADER: \setbeamercolor{palette sidebar secondary}{fg=black}
+#+BEAMER_HEADER: \setbeamercolor{section in sidebar shaded}{fg=uniSgray!85}
+#+BEAMER_HEADER: \setbeamercolor{subsection in sidebar shaded}{fg=uniSgray}
+#+BEAMER_HEADER: \setbeamercolor{subsection in sidebar}{fg=uniSblue}
+#+BEAMER_HEADER: \setbeamerfont{section in sidebar}{series=\bfseries}
+#+BEAMER_HEADER: \setbeamerfont{subsection in sidebar shaded}{series=\bfseries}
+#+BEAMER_HEADER: \makeatletter
+#+BEAMER_HEADER: \newcommand{\setnextsection}[1]{%
+#+BEAMER_HEADER:  \setcounter{section}{\numexpr#1-1\relax}%
+#+BEAMER_HEADER:  \beamer@tocsectionnumber=\numexpr#1-1\relax\space}
+#+BEAMER_HEADER: \makeatother
+# +LaTeX_HEADER: \addtobeamertemplate{footnote}{}{\vspace{0.3ex}}
+#+LaTeX_HEADER: \addtobeamertemplate{footnote}{\hskip -1.5em}{}
+
+*** Shades for blocks in VT Theme                                  :ignore:
+#+LATEX_HEADER: \setbeamertemplate{blocks}[rounded][shadow]
+#+LATEX_HEADER: \setbeamercolor{block title}{fg=white,bg=uniSlightblue!95} 
+#+LATEX_HEADER: \setbeamercolor{block body}{fg=black,bg=uniSlightblue!10}
+#+LATEX_HEADER: \setbeamercolor{block title example}{fg=white,bg=uniSgreen!65!black} 
+#+LATEX_HEADER: \setbeamercolor{block body example}{fg=black,bg=uniSgreen!10}
+#+LATEX_HEADER: \setbeamercolor{block title  alerted}{fg=white,bg=uniSred}
+#+LATEX_HEADER: \setbeamercolor{block body alerted}{fg=black,bg=uniSred!10}
+#+LATEX_HEADER: \setbeamercolor{title}{fg=uniSblue,bg=uniSgray!20}
+#+LATEX_HEADER: \setbeamercolor{frametitle}{fg=uniSblue}
+#+LATEX_HEADER: \setbeamercolor{palette primary}{bg=uniSgray!20,fg=uniSgray}
+#+LATEX_HEADER: \setbeamercolor{palette secondary}{bg=uniSblue,fg=white}
+#+LATEX_HEADER: \setbeamercolor{palette tertiary}{fg=white}
+#+LATEX_HEADER: \setbeamercolor{palette quaternary}{fg=uniSblue}
+#+LATEX_HEADER: \setbeamercolor{titlelike}{parent=palette quaternary}
+
+
+** Macros & Utilities                                                :ignore:
+#+LATEX_HEADER: \newcommand{\reynoldstress}{\boldsymbol{\tau}} 
+#+LATEX_HEADER: \newcommand{\reynoldstresscomp}{\mathsf{\tau}}
+#+LATEX_HEADER: \newcommand{\reynoldstressa}{\boldsymbol{a}}
+#+LATEX_HEADER: \newcommand{\reynoldstressacomp}{\mathsf{a}}
+#+LATEX_HEADER:\newcommand{\reynoldstressb}{\boldsymbol{b}}
+#+LATEX_HEADER:\newcommand{\reynoldstressbcomp}{\mathsf{b}}
+#+LATEX_HEADER:\newcommand{\Tt}{\mathbf{T}}
+#+LATEX_HEADER:\newcommand{\St}{\mathbf{S}}
+#+LATEX_HEADER:\newcommand{\Rt}{\mathbf{R}}
+#+LATEX_HEADER:\newcommand{\Omegat}{\mathbf{\Omega}}
+#+LATEX_HEADER:\newcommand{\It}{\mathbf{I}}
+#+LATEX_HEADER:\newcommand{\Pt}{\boldsymbol{P}}
+#+LATEX_HEADER:\newcommand{\rstt}{\bm{\tau}}
+#+LATEX_HEADER:\newcommand{\bu}{\mathbf{u}}
+
+
+
+
+
+
+
+
+* Motivation
+
+** TODO Surrogate Modelling                                             :Hao:
++
+
+** TODO Limitations of Traditional Models I                          :Fabian:
++
+
+** TODO Limitations of Traditional Models II                         :Fabian:
++
+
+
+* A Short Introduction to Diffusion Models
+
+** TODO Diffusion Models: Idea                                        :Baris:
++ *Forward process (Diffusion process)*: add noise
+  + Add i.i.d. Gaussian noise to data samples over many steps
+  + Progressively degrade the data into pure noise (prior distribution, often i.i.d. Gaussian)
+  + Explicitly prescribed, no modeling needed
+
++ *Backward/Reverse process (Denoising process)*: remove noise
+  + Added noise approximated by a neural network
+  + Recover the original data by gradually removing the noise using neural network, starting from pure noise
+
+** TODO Diffusion Models: Overall Architecture                        :Baris:
++ Forward Process:
+ + Given a data sample $x_0$, each forward step adds a small amount of Gaussian noise:
+ \[
+  x_t = \sqrt{1 - \beta_t} x_{t-1} + \sqrt{\beta_t} \epsilon,\quad \epsilon \sim \mathcal{N}(0, I),\ t \in [1, T\bm{x}_t = \sqrt{1 - \beta_t} \bm{x}_{t-1} + \sqrt{\beta_t}
+   \boldsymbol{\epsilon}, \quad \boldsymbol{\epsilon} \sim \mathcal{N}(0, \bm{I}), \ t \in [1,T]
+ \]
+ + $\beta_t$: noise schedule, $\epsilon$: sampled Gaussian noise
++ Model Training:
+  + Get \(x_t\) from \(x_0\).
+  + Train a model \(\epsilon_\theta\) to predict the added noise at a specified time step t.
+  + Approximate backwards process using
+  \[
+   x_{t-1} = \frac{1}{\sqrt{\alpha_t}} \left( x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \epsilon_\theta(x_t, t) \right) + \sqrt{\beta_t} \epsilon
+  \]
+  where \(\alpha_t = 1 - \beta_t,\quad \bar{\alpha}_t = \prod_{i=1}^t \alpha_i\)
+  
+  
+** TODO Diffusion Models: Conditional Diffusion Models                :Baris:
++ /Diffusion model/: learn the probabilistic distribution \(p(\bm{x})\) 
++ /Conditional diffusion model/: learn the conditional probability of \(p(\bm{x}| \bm{y})\)
++ What \( \bm{y} \) (conditions) can be:
+  + Class labels, text prompt, attributes, or any conditioning signal ...      
++ When you ask ChatGPT questions
+  + You input text \( \bm{y} \).
+  + ChatGPT give you answers by sampling  \(p(\bm{x}| \bm{y})\), either text or images.
+
+** TODO Conditional Diffusion Models for Flow Field Prediction        :Baris:
++ In fluid dynamics, \( \bm{y} \) (conditions) can be:
+  + Labels: Reynolds number ...
+  + Constraints: physical laws
+  + Incomplete information: sparse measurements
+  + Integral information without details: lift, drag
++ Matches the distribution of the training data, unlike deterministic models.
+
+
+** TODO Conditional Diffusion Models for Data Assimilation            :Baris:
++
+
+  
+* Projects
+
+** TODO Generative Prediction of Urban-scale Extreme Events: Project Idea I :Fabian:
++
+
+** TODO Generative Prediction of Urban-scale Extreme Events: Project Idea II :Fabian:
++
+
+** TODO Generative Prediction of Urban-scale Extreme Events: Results :Fabian:
++
+
+** TODO Generative Modeling of Kolmogorov Flow: Kolmogorov Method     :Baris:
++
+
+** TODO Generative Modeling of Kolmogorov Flow: Data Assimilation Method :Baris:
++
+
+** TODO Generative Modeling of Kolmogorov Flow: Data Assimilation Results :Baris:
++
+
+** TODO Generative Modeling of Kolmogorov Flow: State Results         :Baris:
++
+
+** TODO Generative Modeling for Windfarm Prediction: Reduced Order Modeling :Hao:
++
+
+** TODO Generative Modeling for Windfarm Prediction: Neural Network Framework :Hao:
++
+
+** TODO Generative Modeling for Windfarm Prediction: Results I          :Hao:
++
+
+** TODO Generative Modeling for Windfarm Prediction: Results II         :Hao:
++
+
+
+* Summary
+** TODO Summary                                                      :Fabian:
++ 
+
+
+* References                                                     :B_appendix:
+:PROPERTIES:
+:BEAMER_env: appendix
+:END:
+
+** Thank you!
+
+
+#+begin_center
+*Thank you for your attention!*
+#+end_center
+
+** References
+\printbibliography
+
+
+* Footnotes
+
+[fn:nasa-symposium]	Rumsey & Coleman (2022). NASA symposium on turbulence modeling: Roadblocks, and the potential for machine learning.
+[fn:H-operator] Operator $\mathcal{H}: \bm{\tau} \mapsto \tilde{\mathsf{y}}$ is a composition of RANS solver and observation operator
+[fn:NASA-challenge] [[https://turbmodels.larc.nasa.gov/turb-prs2022.html][NASA: "Collaborative Testing Challenge" for Data-Driven Turbulence Models]]

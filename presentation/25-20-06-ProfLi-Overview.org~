@@ -1,0 +1,396 @@
+#+STARTUP: beamer
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [beamer, aspectratio=1610]
+#+TITLE: Towards a Unified Turbulence Model through Multi-Objective Learning
+#+SUBTITLE: Learn from Simple Flows and Generalize to Complex Flows
+#+AUTHOR: Zhuo-Ran Liu
+
+* Configuration                                                      :ignore:
+:PROPERTIES:
+:VISIBILITY: folded
+:END:
+
+** Basic                                                             :ignore:
+
+#+BEAMER_HEADER: \title[Unified Turbulence Model via Multi-objective Learning]{Towards a Unified Turbulence Model through \\ Multi-Objective Learning}
+#+OPTIONS: H:2 toc:1
+
+#+COLUMNS: %45ITEM %10BEAMER_env(Env) %10BEAMER_act(Act) %4BEAMER_col(Col) %8BEAMER_opt(Opt)
+
+#+SELECT_TAGS: current
+# +EXCLUDE_TAGS: current
+
+
+** Packages & Setup                                                 :ignore:
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{animate}
+#+LATEX_HEADER: \newcommand{\cvtime}[1]{\hfill \textsf{(#1)}}
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usepackage{tikzsymbols}
+#+LATEX_HEADER: \usetikzlibrary{decorations.pathmorphing}
+#+LATEX_HEADER: \tikzset{zigzag/.style={decorate,decoration=zigzag}}
+#+BEAMER_HEADER: \newcommand\tikzmark[1]{\tikz[remember picture,overlay] \node[inner xsep=0pt] (#1) {}; }
+#+LATEX_HEADER: \usepackage{mathtools}
+#+LATEX_HEADER: \usepackage{bm}
+#+LATEX_HEADER: \usepackage{adjustbox}
+#+LATEX_HEADER: \adjustboxset{width=0.99\textwidth,center,keepaspectratio}
+#+LATEX_HEADER: \setbeamerfont{footnote}{size=\scriptsize}
+#+LATEX_HEADER: \newcommand{\trimeqspace}{\vspace{-1.5em}}
+#+LATEX_HEADER: \newcommand{\trimeqspacehalf}{\vspace{-0.75em}}
+#+LATEX_HEADER: \usepackage{appendixnumberbeamer}
+
+#+BEAMER_HEADER: \author[Liu, Wang \\ Zhao, Xiao \\ ITLR-DDSim]{Zhuo-Ran Liu, Hao-Chen Wang, Zhuo-Lin Zhao, Heng Xiao}
+#+BEAMER_HEADER: \institute[Univeristy of Stuttgart]{Institute of Aerospace Thermodynamics \\ Faculty of Aerospace Engineering and Geodesy\\ University of Stuttgart \vspace{0.25em}}
+#+BEAMER_HEADER: \titlegraphic{\includegraphics[height=.15\paperheight,keepaspectratio]{logos/simtech-itlr-unistr}}
+
+#+LATEX_HEADER: \usepackage{copyrightbox}
+#+LATEX_HEADER: \makeatletter
+#+LATEX_HEADER: \renewcommand{\CRB@setcopyrightfont}{\tiny\color{gray}}
+#+LATEX_HEADER: \makeatother
+
+#+BEAMER_HEADER: \newenvironment<>{lowkey}[1]{%
+#+BEAMER_HEADER:  \begin{actionenv}#2%
+#+BEAMER_HEADER:      \def\insertblocktitle{#1}%
+#+BEAMER_HEADER:      \par%
+#+BEAMER_HEADER:        \setbeamercolor{block title}{fg=uniSblue,bg=HStone!15}
+#+BEAMER_HEADER:        \setbeamercolor{block body}{bg=HStone!5}
+#+BEAMER_HEADER: \usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+
+#+BEAMER_HEADER: \newenvironment<>{plain}[1]{%
+#+BEAMER_HEADER:  \begin{actionenv}#2%
+#+BEAMER_HEADER:      \def\insertblocktitle{#1}%
+#+BEAMER_HEADER:      \par%
+#+BEAMER_HEADER:        \setbeamercolor{block title}{fg=uniSblue,bg=white}
+#+BEAMER_HEADER:        \setbeamercolor{block body}{bg=white}
+#+BEAMER_HEADER:       \setbeamertemplate{blocks}[rounded][shadow=false]
+#+BEAMER_HEADER: \usebeamertemplate{block begin}}{\par\usebeamertemplate{block end}\end{actionenv}}
+
+# +BEAMER_HEADER: \AtBeginSection[]{\begin{frame}[noframenumbering]{Outline} \tableofcontents[currentsection]  \end{frame}}
+
+# Space around equation
+#+LATEX_HEADER: \AtBeginDocument{%
+#+LATEX_HEADER:   \setlength{\abovedisplayskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\belowdisplayskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\abovedisplayshortskip}{6pt}%
+#+LATEX_HEADER:   \setlength{\belowdisplayshortskip}{6pt}%
+#+LATEX_HEADER: }
+
+
+
+
+*** Customized Citation Format                          :ignore:
+#+LATEX_HEADER: \usepackage[backend=biber, style=verbose, giveninits=true, maxnames=99]{biblatex}
+#+LATEX_HEADER: \bibliography{ref.bib}
+#+LATEX_HEADER: \DeclareDelimFormat{nametitledelim}{\addspace}
+#+LATEX_HEADER: \DeclareFieldFormat[article]{pages}{#1}
+#+LATEX_HEADER: \DeclareBibliographyDriver{article}{%
+#+LATEX_HEADER:   \usebibmacro{bibindex}%
+#+LATEX_HEADER:   \usebibmacro{begentry}%
+#+LATEX_HEADER:   \usebibmacro{author/translator+others}%
+#+LATEX_HEADER:   \setunit{\addspace}\newblock
+#+LATEX_HEADER:   \printtext[parens]{\printfield{year}}%
+#+LATEX_HEADER:   \newunit\newblock
+#+LATEX_HEADER:   \usebibmacro{title}%
+#+LATEX_HEADER:   \newunit
+#+LATEX_HEADER:   \printfield{journaltitle}%
+#+LATEX_HEADER:   \setunit*{\addcomma\space}%
+#+LATEX_HEADER:   \printfield{volume}%
+#+LATEX_HEADER:   \setunit*{\addcomma\space}%
+#+LATEX_HEADER:   \printfield{pages}%
+#+LATEX_HEADER:   \newunit\newblock
+#+LATEX_HEADER:   \usebibmacro{finentry}}
+#+PROPERTY: BIBLIOGRAPHY ref.bib
+
+#+LATEX_HEADER: \usepackage{fontawesome}
+#+LATEX_HEADER: \renewcommand{\thefootnote}{\faBook}
+#+LATEX_HEADER: \renewcommand{\footnotesize}{\scriptsize}
+
+
+
+** VT Theme Setup                                                   :ignore:
+
+#+BEAMER_THEME: [left] Marburg
+#+BEAMER_HEADER:  \usecolortheme{beaver}
+#+BEAMER_HEADER:  \usefonttheme{professionalfonts}  
+#+BEAMER_HEADER:  \setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+#+BEAMER_HEADER: \setbeamertemplate{caption}[numbered]
+#+BEAMER_HEADER: \setbeamertemplate{section in toc}[sections numbered]
+#+BEAMER_HEADER: \setbeamertemplate{subsection in toc}[subsections numbered]
+#+BEAMER_HEADER: \setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+# VT Theme
+#+BEAMER_HEADER: \definecolor{CMaroon}{RGB}{139,31,65}
+#+BEAMER_HEADER: \definecolor{VSunset}{RGB}{247,144,30}
+#+BEAMER_HEADER: \definecolor{HStone}{RGB}{109,106,117}
+
+# see http://www.uni-stuttgart.de/more/corporate_design/cd-dateien/Uni_Stuttgart_CD-Manual_2016_klein.pdf
+#+BEAMER_HEADER: \definecolor{uniSblue}{RGB}{0,65,145}
+#+BEAMER_HEADER: \definecolor{uniSlightblue}{RGB}{0,190,255}
+#+BEAMER_HEADER: \definecolor{uniSgray}{RGB}{62, 68, 76}
+#+BEAMER_HEADER: \definecolor{uniSyellow}{RGB}{255, 213, 0}
+#+BEAMER_HEADER: \definecolor{uniSred}{RGB}{230, 0, 50}
+#+BEAMER_HEADER: \definecolor{uniSgreen}{RGB}{0, 200, 50}
+
+#+BEAMER_HEADER: \makeatletter
+#+BEAMER_HEADER: \setbeamertemplate{sidebar canvas \beamer@sidebarside}[vertical shading][top=uniSlightblue!90,bottom=uniSblue!75]
+#+BEAMER_HEADER: \makeatother
+#+BEAMER_HEADER: \setbeamercolor{palette sidebar secondary}{fg=black}
+#+BEAMER_HEADER: \setbeamercolor{section in sidebar shaded}{fg=uniSgray!85}
+#+BEAMER_HEADER: \setbeamercolor{subsection in sidebar shaded}{fg=uniSgray}
+#+BEAMER_HEADER: \setbeamercolor{subsection in sidebar}{fg=uniSblue}
+#+BEAMER_HEADER: \setbeamerfont{section in sidebar}{series=\bfseries}
+#+BEAMER_HEADER: \setbeamerfont{subsection in sidebar shaded}{series=\bfseries}
+#+BEAMER_HEADER: \makeatletter
+#+BEAMER_HEADER: \newcommand{\setnextsection}[1]{%
+#+BEAMER_HEADER:  \setcounter{section}{\numexpr#1-1\relax}%
+#+BEAMER_HEADER:  \beamer@tocsectionnumber=\numexpr#1-1\relax\space}
+#+BEAMER_HEADER: \makeatother
+# +LaTeX_HEADER: \addtobeamertemplate{footnote}{}{\vspace{0.3ex}}
+#+LaTeX_HEADER: \addtobeamertemplate{footnote}{\hskip -1.5em}{}
+
+*** Shades for blocks in VT Theme                                  :ignore:
+#+LATEX_HEADER: \setbeamertemplate{blocks}[rounded][shadow]
+#+LATEX_HEADER: \setbeamercolor{block title}{fg=white,bg=uniSlightblue!95} 
+#+LATEX_HEADER: \setbeamercolor{block body}{fg=black,bg=uniSlightblue!10}
+#+LATEX_HEADER: \setbeamercolor{block title example}{fg=white,bg=uniSgreen!65!black} 
+#+LATEX_HEADER: \setbeamercolor{block body example}{fg=black,bg=uniSgreen!10}
+#+LATEX_HEADER: \setbeamercolor{block title  alerted}{fg=white,bg=uniSred}
+#+LATEX_HEADER: \setbeamercolor{block body alerted}{fg=black,bg=uniSred!10}
+#+LATEX_HEADER: \setbeamercolor{title}{fg=uniSblue,bg=uniSgray!20}
+#+LATEX_HEADER: \setbeamercolor{frametitle}{fg=uniSblue}
+#+LATEX_HEADER: \setbeamercolor{palette primary}{bg=uniSgray!20,fg=uniSgray}
+#+LATEX_HEADER: \setbeamercolor{palette secondary}{bg=uniSblue,fg=white}
+#+LATEX_HEADER: \setbeamercolor{palette tertiary}{fg=white}
+#+LATEX_HEADER: \setbeamercolor{palette quaternary}{fg=uniSblue}
+#+LATEX_HEADER: \setbeamercolor{titlelike}{parent=palette quaternary}
+
+
+** Macros & Utilities                                                :ignore:
+#+LATEX_HEADER: \newcommand{\reynoldstress}{\boldsymbol{\tau}} 
+#+LATEX_HEADER: \newcommand{\reynoldstresscomp}{\mathsf{\tau}}
+#+LATEX_HEADER: \newcommand{\reynoldstressa}{\boldsymbol{a}}
+#+LATEX_HEADER: \newcommand{\reynoldstressacomp}{\mathsf{a}}
+#+LATEX_HEADER:\newcommand{\reynoldstressb}{\boldsymbol{b}}
+#+LATEX_HEADER:\newcommand{\reynoldstressbcomp}{\mathsf{b}}
+#+LATEX_HEADER:\newcommand{\Tt}{\mathbf{T}}
+#+LATEX_HEADER:\newcommand{\St}{\mathbf{S}}
+#+LATEX_HEADER:\newcommand{\Rt}{\mathbf{R}}
+#+LATEX_HEADER:\newcommand{\Omegat}{\mathbf{\Omega}}
+#+LATEX_HEADER:\newcommand{\It}{\mathbf{I}}
+#+LATEX_HEADER:\newcommand{\Pt}{\boldsymbol{P}}
+#+LATEX_HEADER:\newcommand{\rstt}{\bm{\tau}}
+#+LATEX_HEADER:\newcommand{\bu}{\mathbf{u}}
+
+
+
+
+
+
+
+* Recall: Objectives and Methodology
+:PROPERTIES:
+:alt_title: Recall
+:END:
+
+** Objectives and Methodology
+
+/Objective: a unified turbulence model/ without manual zoning from users
+
+*** Our Approach: Pareto Optimal Model via Multi-Objective Learning
++ Define the best unified model as \textbf{Pareto optimal}
++ Learned the model jointly from different flows/quantities of interest via multi-objective optimization
++ Unify all training flow mechanisms into a single, neural network-based model
+  - Target 1 :: capable of generalizing to */single-mechanism flows/*
+  - Target 2 :: robust across */flows with multiple interacting mechanisms/*
+
+
+** Multi-Objective Learning via Frank--Wolfe Optimization [[footcite:&sener2018multi]] 
+Adaptive-weight averaging with Frank--Wolfe optimization:
+1. Initialize equal weight for each objective: \( \bm{\xi} = [\frac{1}{N}, \dots, \frac{1}{N}]^{\top} \) and compute gradient.
+2. [@2] Identify the most conflicting gradient/update: \(\Delta \bm{w}_k^{n}\) with the currently weighted gradient \(\Delta \overline{\bm{w}^n} = \sum_{i=1}^N \xi_i \Delta \bm{w}^n_i\).
+3. [@3] Resolve conflict: \(\Delta \widetilde{\bm{w}^n} = \gamma \Delta \bm{w}^n_k + (1-\gamma) \Delta \overline{\bm{w}^n}\).
+   - Find optimal blending ratio \(\gamma\): \( \min_{\gamma} \left\| \gamma \Delta \bm{w}^n_k + (1-\gamma) \Delta \overline{\bm{w}^n} \right\|^2 \)
+   Repeat Steps 2 and 3 until convergence of weight  \(\bm{\xi}\).
+4. [@4] Update model  (neural network weights): \(\bm{w}^{n+1} = \bm{w}^n + \Delta \bm{w}^n\).
+  
+*** Fig for Example of Two Conflicting Objectives             :B_ignoreheading:
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+#+ATTR_LATEX: :options {width=1\textwidth, totalheight=0.25\paperheight, keepaspectratio, center}
+#+begin_adjustbox
+\includegraphics[height=.25\textwidth]{figs/fw-opt-3.pdf}
+#+end_adjustbox
+
+
+
+** Previously Achieved: Unified Model for Single-Mechanism Flows
+*** A unified model for square duct, airfoil and periodic hill flows :B_plain:
+:PROPERTIES:
+:BEAMER_env: plain
+:END:
+
+*** Fig for training-testing-framework
+:PROPERTIES:
+:BEAMER_env: ignoreheading
+:END:
+#+ATTR_LATEX: :options {width=0.7\textwidth,totalheight=\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[height=.5\textwidth]{figs/training-testing-framework-duct-airfoil-pehill.pdf}
+#+end_adjustbox
+
+
+  
+* Progress: Unified Model for Flows with Multiple Interacting Mechanisms
+:PROPERTIES:
+:alt_title: Progress
+:END:
+
+** Modifications to Training Scheme: Gradient Normalization
+
+*** Fig of Pareto Front                                               :BMCOL:
+:PROPERTIES:
+:BEAMER_col: 0.475
+:END:
+#+ATTR_LATEX: :options {width=1\textwidth,totalheight=0.4\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[height=.5\textwidth]{figs/pareto-front.pdf}
+#+end_adjustbox
+
+
+*** Explaination                                                      :BMCOL:
+:PROPERTIES:
+:BEAMER_col: 0.475
+:END:
++ Red points lie on the Pareto front but do not meet our preference.
++ Green point represents the desired trade-off solution.
+
+
+*** Gradient Normalization to Guide Optimization toward Desired Behavior
++ Normalize gradients by misfit when computing weights
++ Original algorithm ensures solutions lie on the Pareto front, but may favor models that improve only a subset of cases
++ This modification leads training toward models with improved performance across the full set of training flows  
+  - Emphasizes cases with larger misfits, assigning them higher weights  
+  - Guides optimization toward consistent improvements
+
+
+** Modifications to Training Scheme: Baseline Regularization
+Recall the procedure of training with indirect observation data:
+#+ATTR_LATEX: :options {width=1\textwidth,totalheight=0.5\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[height=.5\textwidth]{figs/turbulence-model-framework.pdf}
+#+end_adjustbox
+
+*** Baseline Regularization for Robustness
++ Introduce regularization toward a baseline model to enhance extrapolation
+  - Nonlinear eddy viscosity model:
+    \[
+    \bm{b} = g^{(1)} \mathbf{T}^{(1)} + g^{(2)} \mathbf{T}^{(2)},
+    \]
+    with baseline linear eddy viscosity model: \(g^{(1)}_0 = -0.09\) and \(g^{(2)}_0 = 0\)
+  - Add regularization term into the cost function \(J\):
+    \[
+    J \left( \bm{w} \right) = \| \bm{w}^{i+1} - \bm{w}^i \|_{\mathbf{P}}^2 + \left\|\bm{y} - \bm{y}^*\right\|_{\mathbf{R}}^2 + \| \mathrm{NN}(\bm{w}^{i+1}) - \bm{g}_0 \|_{\mathbf{Q}}^2
+    \]
++ Use regularized EnKF for training to keep the trained model close to baseline
+
+
+
+** Unified Model for Flow with Multiple Interacting Mechanisms
+
++ Objective :: Learn mechanisms of secondary flow and separation from simple 2D flows to enhance modeling accuracy in complex 3D flows.
+
++ Training strategy :: Jointly train on square duct and periodic hill flows
+
+#+ATTR_LATEX: :options {width=1\textwidth,totalheight=0.5\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[height=.5\textwidth]{figs/training-testing-framework-duct-pehill-diffuser.pdf}
+#+end_adjustbox
+
++ Training results :: Misfits reduce by 60% for square duct and 20% for periodic hill.
+
+
+
+** Generalization across Training Flow Classes
+
+Learned model generalizes well across training flow classes.
+
+#+ATTR_LATEX: :options {width=1\textwidth,totalheight=0.8\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[height=.5\textwidth]{figs/radar_chart_base_opt_six.pdf}
+#+end_adjustbox
+
+
+
+** A Challenging Test Case: 3D Stanford Diffuser [[footcite:&cherry2008geometric]]
+
+It is an incompressible, asymmetry internal flow configuration characterized by:
++ strong adverse pressure gradient from expansion area \(\Rightarrow\) *separation*, 
++ Reynolds normal stresses imbalance \(\Rightarrow\) *secondary flows*,
++ and their *mutual interaction*.
+
+#+ATTR_LATEX: :options {width=1\textwidth,totalheight=0.5\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[height=.5\textwidth]{figs/diffuser-case.pdf}
+#+end_adjustbox
+
+
+
+** Testing Results: Flow Fields Comparison
+
++ Separation location:
+  - \(k \text{--} \omega\) model: near side wall (incorrect)  
+  - Learned model: near top wall (consistent with DNS)
++ Baseline model performs poorly in separation.
++ Learned model aligns with DNS and captures corner separation accurately.
+
+
+#+ATTR_LATEX: :options {width=1\textwidth,totalheight=0.95\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[height=.5\textwidth]{figs/diffuser-model-comparison.pdf}
+#+end_adjustbox
+
+
+** Testing Results: Friction Coefficients Comparison
+
++ Learned model shows closer agreement with DNS than baseline \(k \text{--}\omega\) model
++ Demonstrates improved prediction of near-wall behavior
+
+#+ATTR_LATEX: :options {width=1\textwidth,totalheight=0.6\paperheight,keepaspectratio,center}
+#+begin_adjustbox
+\includegraphics[height=.5\textwidth]{figs/diffuser-cf-comparison.pdf}
+#+end_adjustbox
+
+
+
+
+* Conclusion
+** Conclusion
+
+Our method learns from flows with single mechanism and generalizes to:
++ Training flow classes with varying parameters.
++ Unseen complex flows combining mechanisms present in the training set.
+
+
+
+* References                                                     :B_appendix:
+:PROPERTIES:
+:BEAMER_env: appendix
+:END:
+
+** Thank you!
+
+
+#+begin_center
+*Thank you for your attention!*
+#+end_center
+
+** References
+\printbibliography
+
+
+* Footnotes
+
+[fn:nasa-symposium]	Rumsey & Coleman (2022). NASA symposium on turbulence modeling: Roadblocks, and the potential for machine learning.
+[fn:H-operator] Operator $\mathcal{H}: \bm{\tau} \mapsto \tilde{\mathsf{y}}$ is a composition of RANS solver and observation operator
+[fn:NASA-challenge] [[https://turbmodels.larc.nasa.gov/turb-prs2022.html][NASA: "Collaborative Testing Challenge" for Data-Driven Turbulence Models]]
